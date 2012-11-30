@@ -9,7 +9,7 @@ in your Rails application, run your tests, and the documentation will be availab
 
 Use bundler to install Avocado by adding this line to your Gemfile:
 
-  gem "avocado", :git => "https://github.com/metova/avocado.git"
+  gem "avocado", :git => "git://github.com/metova/avocado.git"
 
 And then run:
 
