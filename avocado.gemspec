@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = Avocado::VERSION
   s.authors     = ["Logan Serman"]
   s.email       = ["loganserman@gmail.com"]
-  s.homepage    = "TODO"
+  s.homepage    = "https://github.com/metova/avocado"
   s.summary     = "Generates JSON API documentation automatically from Cucumber tests"
   s.description = "Avocado produces HTML documentation for JSON APIs based on Cucumber tests. The documentation is generated automatically everytime you run Cucumber."
 
