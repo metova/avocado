@@ -13,7 +13,7 @@ module Avocado
 
     # Save the file :)
     def save!
-      File.open(@filepath, 'w') do |f|
+      File.open(@filepath, File::WRONLY|File::CREAT) do |f|
         f.write @doc
       end
     end

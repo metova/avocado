@@ -2,3 +2,7 @@
 log/*.log
 pkg/
 app/views/avocado/dashboard/_*.html.erb
+
+app/views/avocado/dashboard/_documentation.html.erb
+
+app/views/avocado/dashboard/_sidebar.html.erb
