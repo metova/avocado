@@ -11,7 +11,6 @@ World(Avocado::World)
 # so type-checking can be ignored while storing each scenario.
 After do |scenario|
   scenario.extend("Avocado::#{scenario.class.name.demodulize}".constantize)
-  Rails.logger.info "Storing scenario: #{scenario.heading}"
   Avocado.store scenario, request, response
 end
 
@@ -19,6 +18,5 @@ end
 # view files, so that they can be seen wherever Avocado is mounted. Unfortunately
 # using Kernel#at_exit is the only way to do an "After All" hook in Cucumber
 at_exit do
-  Rails.logger.info 'Documenting Cucumber scenarios!'
   Avocado.document!
 end
