@@ -11,7 +11,7 @@ module Avocado
 
   # Stores all scenario data while Cucumber is running tests
   def self.store(scenario, request, response)
-    return unless request.present? && response.present?
+    return if request.nil? or response.nil?
     resource = resource_from_url request.path, request.request_method
     return if resource.nil?
 
@@ -24,7 +24,7 @@ module Avocado
 
   # Loop through all of the stored scenarios and write them to the view files
   def self.document!
-    @resources = @scenarios.map(&:resource).uniq
+    @resources = @scenarios.map(&:resource).uniq.sort!
 
     sidebar = Avocado::Sidebar.new
     sidebar.populate @resources

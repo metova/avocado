@@ -11,7 +11,7 @@ module Avocado
         append resource_representation(r)
 
         # select only the scenarios that affect this resource
-        scenarios.select { |s| s.resource == r }.each do |s|
+        scenarios.select { |s| s.resource == r }.sort_by(&:heading).each do |s|
           append scenario_representation(s)
         end
       end

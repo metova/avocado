@@ -67,6 +67,7 @@ header {
   border-top: 0;
   -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 10px 0px;
   position: fixed;
+  z-index: 999;
 }
 
 header h1 {
