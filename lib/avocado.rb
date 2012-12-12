@@ -24,7 +24,7 @@ module Avocado
 
   # Loop through all of the stored scenarios and write them to the view files
   def self.document!
-    @resources = @scenarios.map(&:resource).uniq.sort!
+    @resources = @scenarios.map(&:resource).uniq.sort
 
     sidebar = Avocado::Sidebar.new
     sidebar.populate @resources
