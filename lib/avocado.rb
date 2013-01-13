@@ -1,10 +1,7 @@
-require 'avocado/engine'
 require 'avocado/scenario'
 require 'avocado/example_row'
 require 'avocado/world'
-require 'avocado/document/document'
-require 'avocado/document/sidebar'
-require 'avocado/document/documentation'
+require 'erb'
 
 module Avocado
   @scenarios = []
@@ -22,18 +19,15 @@ module Avocado
     @scenarios << scenario
   end
 
-  # Loop through all of the stored scenarios and write them to the view files
+  # Generate the documentation from the stored scenarios
   def self.document!
+    template = IO.read documentation_template_path
     @resources = @scenarios.map(&:resource).uniq.sort
+    documentation = ERB.new(template).result binding
 
-    sidebar = Avocado::Sidebar.new
-    sidebar.populate @resources
-
-    documentation = Avocado::Documentation.new
-    documentation.populate @resources, @scenarios
-
-    sidebar.save!
-    documentation.save!
+    File.open documentation_destination_path, 'w+' do |f|
+      f.write documentation
+    end
   end
 
 protected
@@ -45,6 +39,18 @@ protected
     Rails.application.routes.recognize_path(path, :method => method)[:controller].partition('/').last.titleize
   rescue ActionController::RoutingError
     nil
+  end
+
+  def self.root
+    File.expand_path '../..', __FILE__
+  end
+
+  def self.documentation_template_path
+    File.join root, 'lib', 'avocado', 'views', 'documentation.html.erb'
+  end
+
+  def self.documentation_destination_path
+    File.join Rails.root, 'public', 'api-docs.html'
   end
 
 end

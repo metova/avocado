@@ -1,6 +1,8 @@
 require 'avocado'
 
 # Extend the Cucumber World object with some convenience methods
+#   request: alias for last_request
+#   response: alias for last_response
 World(Avocado::World)
 
 # After hook for all running Cucumber tests, this block extends the proper

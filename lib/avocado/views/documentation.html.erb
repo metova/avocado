@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Avocado</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      /*
+      ** Toggle the scenario details when the title is clicked
+      ** The `.expanded` CSS class on the caret makes it point downward, instead of to the right
+      */
+      $('.scenario a').click(function() {
+        var scenario = $(this).next('.scenario-details');
+
+        if (scenario.is(":visible")) {
+          scenario.hide();
+        } else {
+          scenario.show();
+        }
+
+        $(this).children(":first").toggleClass("expanded");
+      });
+    });
+  </script>
+  <style type="text/css">
+    /* CSS Reset */
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+
+    body {
+      font-family: 'helvetica neue', helvetica, arial, sans-serif;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .wrapper {
+      width: 960px;
+      margin: auto;
+    }
+
+    hr {
+      height: 1px;
+      background-color: #dedede;
+      border: 0;
+      margin: 18px 0;
+    }
+
+    header {
+      height: 40px;
+      line-height: 40px;
+      width: 100%;
+      margin: 0 0 20px 0;
+      background-color: #f7f7f7;
+      border: 1px solid #d4d4d4;
+      border-top: 0;
+      -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 10px 0px;
+      position: fixed;
+      z-index: 999;
+    }
+
+    header h1 {
+      font-size: 20px;
+      color: #777;
+    }
+
+    section#content {
+      padding-top: 60px;
+    }
+
+    a, a:hover, a:visited {
+      color: #08c;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #main .scenario a i.caret {
+      width: 0;
+      height: 0;
+      margin: 5px 5px 0 0;
+      border-style: solid;
+      border-width: 4px 0 4px 7px;
+      border-color: transparent transparent transparent #08c;
+      display: block;
+      float: left;
+    }
+
+    #main .scenario a i.expanded {
+      border-color: #08c transparent transparent transparent;
+      border-width: 7px 4px 0 4px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: bold;
+    }
+
+    h2 {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    h2:before {
+      display: block;
+      content: " ";
+      margin-top: -60px;
+      height: 60px;
+      visibility: hidden;
+    }
+
+    h3 {
+      font-size: 18px;
+      line-height: 18px;
+      margin: 0 0 10px 0;
+    }
+
+    #sidebar {
+      width: 288px;
+      float: left;
+      position: relative;
+    }
+
+    #sidebar ul {
+      width: 200px;
+      margin: 0 20px 0 0;
+      padding: 20px;
+      list-style-position: inside;
+      background-color: #f5f5f5;
+      border: 1px solid #e3e3e3;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      position: fixed;
+    }
+
+    #sidebar ul li a {
+      height: 24px;
+      line-height: 24px;
+      display: block;
+    }
+
+    #main {
+      margin-left: 280px;
+      float: left;
+    }
+
+    #main .scenario {
+      margin-bottom: 5px;
+    }
+
+    #main .scenario a {
+      height: 25px;
+      color: #08c;
+      display: block;
+    }
+
+    #main .scenario a i.caret {
+      width: 0;
+      height: 0;
+      margin: 5px 5px 0 0;
+      border-style: solid;
+      border-width: 4px 0 4px 7px;
+      border-color: transparent transparent transparent #08c;
+      display: block;
+      float: left;
+    }
+
+    #main .scenario a i.expanded {
+      border-color: #08c transparent transparent transparent;
+      border-width: 7px 4px 0 4px;
+    }
+
+    #main .scenario .scenario-details {
+      display: none;
+    }
+
+    pre {
+      margin: 20px 0 20px 10px;
+      font-family: monospace !important;
+      padding: 0px 10px 10px 15px;
+      font-size: 12px;
+      background-color: #f5f5f5;
+      border: 1px solid #e3e3e3;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      position: relative;
+      white-space: pre-line;
+    }
+
+    /* Header on the code blocks */
+    pre i {
+      height: 14px;
+      line-height: 14px;
+      background-color: #3A87AD;
+      color: #fff;
+      white-space: normal;
+      font-family: 'helvetica neue', helvetica, arial, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 4px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      position: absolute;
+      top: -9px;
+      left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrapper">
+      <h1>REST API Documentation</h1>
+    </div>
+  </header>
+  <section id="content" class="wrapper">
+    <nav id="sidebar">
+      <ul id="resources">
+        <h3>Resources</h3>
+      <% @resources.each do |r| %>
+        <li><a href="#<%= r.parameterize %>"><%= r %></a></li>
+      <% end %>
+      </ul>
+    </nav>
+    <div id="main">
+    <% @resources.each do |r| %>
+      <div class="resource" id="<%= r.parameterize %>">
+        <a name="<%= r.parameterize %>"></a>
+        <h2><%= r %></h2>
+        <hr />
+      </div>
+      <% @scenarios.select { |s| s.resource == r }.sort_by(&:heading).each do |s| %>
+        <div class="scenario">
+          <a href="javascript:void(0);">
+            <i class="caret"></i>
+            <span><%= s.heading %></span>
+          </a>
+          <div class="scenario-details">
+            <pre>
+              <i>Test Description</i>
+              <span>
+                <%= s.steps %>
+              </span>
+            </pre>
+            <pre>
+              <i>Example JSON Request</i>
+              <span>
+                <%= "#{s.request.request_method} #{s.request.path}" %>
+                <%= s.request.params.to_json %>
+              </span>
+            </pre>
+            <pre>
+              <i>Example JSON Response</i>
+              <span>
+                <%= "Status: #{s.response.status}" %>
+                <%= s.response.body.gsub(',', ', ') unless s.response.status == 500 %>
+              </span>
+            </pre>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+    </div>
+  </section>
+</body>
+</html>
