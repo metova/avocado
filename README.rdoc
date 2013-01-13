@@ -2,8 +2,8 @@
 
 Avocado hooks into your Rails Cucumber tests and automatically documents any
 tests that have a request and response. This means that collaborating with a
-team that uses your JSON REST API is simple - just mount Avocado wherever you want
-in your Rails application, run your tests, and the documentation will be available.
+team that uses your JSON REST API is simple - just install Avocado, run your
+Cucumber suite, and commit the HTML documentation file.
 
 == Installation
 
@@ -11,14 +11,9 @@ Use bundler to install Avocado by adding this line to your Gemfile:
 
   gem "avocado", :git => "git://github.com/metova/avocado.git"
 
-And then run:
+Install the gem:
 
   bundle install
-
-After the gem is installed, mount Avocado into your application by adding this to
-+routes.rb+:
-
-  mount Avocado::Engine, :at => 'path/to/documentation'
 
 Finally, add this line to the top of +features/support/env.rb+:
 
@@ -26,11 +21,15 @@ Finally, add this line to the top of +features/support/env.rb+:
 
 == Usage
 
-Avocado watches your tests through Cucumber's +After+ hook. This means that
-provided you have written Cucumber tests, you need to do absolutely nothing to
-setup Avocado. Just run your tests, and the documentation will be provided.
+Avocado watches your tests through Cucumber's +After+ hook. Provided your API
+has good test coverage, it will be documented automatically any time you run
+your test suite.
 
-Keep in mind that tests that are not using your API will not be documented. Avocado
-is only used for documenting JSON REST APIs -- so a Rack::Request and Rack::Response
-object must be available through +last_request+ or +last_response+. These methods
-are included in Cucumber, so you shouldn't have to worry about them.
+The documentation is generated in +public/api-docs.html+, so it is accessible
+via +http://your-site.com/api-docs.html+. This file is completely rewritten with
+each Cucumber run, so be sure to run a full test suite before pushing any API
+changes (which you should be doing anyway!).
+
+Keep in mind that Avocado is built to document JSON APIs -- so a Rack::Request
+and Rack::Response object must be available through +last_request+ or +last_response+.
+These methods are included in Cucumber, so you shouldn't have to worry about them.
