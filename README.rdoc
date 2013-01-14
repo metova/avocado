@@ -26,7 +26,7 @@ has good test coverage, it will be documented automatically any time you run
 your test suite.
 
 The documentation is generated in +public/api-docs.html+, so it is accessible
-via +http://your-site.com/api-docs.html+. This file is completely rewritten with
+via http://your-site.com/api-docs.html. This file is completely rewritten with
 each Cucumber run, so be sure to run a full test suite before pushing any API
 changes (which you should be doing anyway!).
 
