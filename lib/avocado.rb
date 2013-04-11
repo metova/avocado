@@ -14,7 +14,6 @@ module Avocado
     scenario.resource = resource
     scenario.request = request
     scenario.response = response
-
     @scenarios << scenario
   end
 
