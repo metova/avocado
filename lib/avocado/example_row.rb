@@ -10,7 +10,7 @@ module Avocado
 
     def steps
       expr = scenario_outline.to_sexp
-      invocations = expr.select { |e| e.kind_of?(Array) && e.first.eql?(:step) }
+      invocations = expr.select { |e| e.is_a?(Array) && e.first.eql?(:step) }
 
       # Combine the predicate and the step into one string.
       #   s[2] is "Given ", "When ", etc.

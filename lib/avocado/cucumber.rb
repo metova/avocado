@@ -1,10 +1,5 @@
 require 'avocado'
 
-# Extend the Cucumber World object with some convenience methods
-#   request: alias for last_request
-#   response: alias for last_response
-World(Avocado::World)
-
 # After hook for all running Cucumber tests, this block extends the proper
 # Avocado module based on what type of object is passed to the block by Cucumber:
 #   Cucumber::Ast::Scenario will extend Avocado::Scenario
@@ -12,8 +7,11 @@ World(Avocado::World)
 # These extensions provide a common interface for interacting with the scenario properties,
 # so type-checking can be ignored while storing each scenario.
 After do |scenario|
-  scenario.extend("Avocado::#{scenario.class.name.demodulize}".constantize)
-  Avocado.store scenario, request, response
+  extension = "Avocado::#{scenario.class.name.demodulize}".safe_constantize
+  if extension
+    scenario.extend(extension)
+    Avocado.store scenario, last_request, last_response
+  end
 end
 
 # When Cucumber finishes, document! will write all of the stored scenarios to the
