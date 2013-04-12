@@ -1,5 +1,6 @@
 require 'avocado/scenario'
 require 'avocado/example_row'
+require 'avocado/world'
 require 'erb'
 
 module Avocado

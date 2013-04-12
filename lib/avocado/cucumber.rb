@@ -1,5 +1,7 @@
 require 'avocado'
 
+World(Avocado::World)
+
 # After hook for all running Cucumber tests, this block extends the proper
 # Avocado module based on what type of object is passed to the block by Cucumber:
 #   Cucumber::Ast::Scenario will extend Avocado::Scenario
@@ -10,7 +12,7 @@ After do |scenario|
   extension = "Avocado::#{scenario.class.name.demodulize}".safe_constantize
   if extension
     scenario.extend(extension)
-    Avocado.store scenario, last_request, last_response
+    Avocado.store scenario, last_request_if_one_was_made, last_response_if_one_was_made
   end
 end
 
