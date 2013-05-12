@@ -12,7 +12,7 @@ module Avocado
     resource = resource_from_url request.path, request.request_method
     return if resource.nil?
 
-    scenario.resource = resource
+    scenario.resource = resource.split('/').last
     scenario.request = request
     scenario.response = response
     @scenarios << scenario
