@@ -115,6 +115,7 @@
     }
 
     h2 {
+      margin: 20px 0 0 0;
       font-size: 28px;
       line-height: 28px;
     }
@@ -204,7 +205,7 @@
       -moz-border-radius: 4px;
       border-radius: 4px;
       position: relative;
-      white-space: pre-line;
+      white-space: pre-wrap;
     }
 
     /* Header on the code blocks */
@@ -259,21 +260,22 @@
             <pre>
               <i>Test Description</i>
               <span>
-                <%= s.steps %>
+<%= s.steps %>
               </span>
             </pre>
             <pre>
               <i>Example JSON Request</i>
               <span>
-                <%= "#{s.request.request_method} #{s.request.path}" %>
-                <%= s.request.params.to_json %>
+<%= "#{s.request.request_method} #{s.request.path}" %>
+<%= s.request.params.to_json %>
               </span>
             </pre>
             <pre>
               <i>Example JSON Response</i>
               <span>
-                <%= "Status: #{s.response.status}" %>
-                <%= s.response.body.gsub(',', ', ') unless s.response.status == 500 %>
+<%= "Status: #{s.response.status}" %>
+
+<%= JSON.pretty_generate(JSON.parse(s.response.body)) unless s.response.status == 500 %>
               </span>
             </pre>
           </div>
