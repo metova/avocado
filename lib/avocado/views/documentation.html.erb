@@ -275,7 +275,7 @@
               <span>
 <%= "Status: #{s.response.status}" %>
 
-<%= JSON.pretty_generate(JSON.parse(s.response.body)) unless s.response.status == 500 %>
+<%= JSON.pretty_generate(JSON.parse(s.response.body)) unless s.response.status == 500 rescue '' %>
               </span>
             </pre>
           </div>
