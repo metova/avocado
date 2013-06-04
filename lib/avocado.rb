@@ -21,7 +21,7 @@ module Avocado
   # Generate the documentation from the stored scenarios
   def self.document!
     template = IO.read documentation_template_path
-    @resources = @scenarios.map(&:resource).uniq.sort
+    @resources = @scenarios.map(&:resource).uniq.reject(&:blank?).sort
     documentation = ERB.new(template).result binding
 
     File.open documentation_destination_path, 'w+' do |f|
