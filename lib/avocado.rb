@@ -11,8 +11,10 @@ module Avocado
     return if request.nil? or response.nil?
     resource = resource_from_url request.path, request.request_method
     return if resource.nil?
+    resource = resource.split('/').last
+    return if resource.nil?
 
-    scenario.resource = resource.split('/').last
+    scenario.resource = resource
     scenario.request = request
     scenario.response = response
     @scenarios << scenario
@@ -21,7 +23,7 @@ module Avocado
   # Generate the documentation from the stored scenarios
   def self.document!
     template = IO.read documentation_template_path
-    @resources = @scenarios.map(&:resource).uniq.reject(&:blank?).sort
+    @resources = @scenarios.map(&:resource).uniq.sort
     documentation = ERB.new(template).result binding
 
     File.open documentation_destination_path, 'w+' do |f|
