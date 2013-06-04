@@ -10,8 +10,7 @@ module Avocado
   def self.store(scenario, request, response)
     return if request.nil? or response.nil?
     resource = resource_from_url request.path, request.request_method
-    return if resource.nil?
-    resource = resource.split('/').last
+    resource = resource.split('/').last if resource.present?
     return if resource.nil?
 
     scenario.resource = resource
