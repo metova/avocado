@@ -22,7 +22,7 @@ Add this line to the top of +features/support/env.rb+:
   require 'avocado/cucumber'
 
 Avocado will use +last_request+ and +last_response+ to document each scenario
-by using Cucumber's +After+ hook. These methods are part of +Rack::Test::Methods+,
+by using Cucumber's After hook. These methods are part of Rack::Test::Methods,
 so they will be available by default in Cucumber.
 
 == RSpec
@@ -32,7 +32,7 @@ Add this line to the top of +spec/spec_helper.rb+:
   require 'avocado/rspec'
 
 Avocado will use +request+ and +response+ to document each spec by using RSpec's
-+after(:each)+ hook.
+after(:each) hook.
 
 == Usage
 
