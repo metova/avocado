@@ -161,7 +161,7 @@
 
     #main {
       margin-left: 280px;
-      float: left;
+      overflow: hidden;
     }
 
     #main .scenario {
@@ -194,10 +194,14 @@
       display: none;
     }
 
+    section.codeblock {
+      position: relative;
+    }
+
     pre {
       margin: 20px 0 20px 10px;
       font-family: monospace !important;
-      padding: 0px 10px 10px 15px;
+      padding: 20px 15px 0 15px;
       font-size: 12px;
       background-color: #f5f5f5;
       border: 1px solid #e3e3e3;
@@ -205,11 +209,11 @@
       -moz-border-radius: 4px;
       border-radius: 4px;
       position: relative;
-      white-space: pre-wrap;
+      white-space: pre;
     }
 
     /* Header on the code blocks */
-    pre i {
+    section.codeblock i {
       height: 14px;
       line-height: 14px;
       background-color: #3A87AD;
@@ -224,7 +228,13 @@
       border-radius: 3px;
       position: absolute;
       top: -9px;
-      left: 10px;
+      left: 20px;
+      z-index: 888;
+    }
+
+    pre span {
+      display: block;
+      overflow-x: scroll;
     }
   </style>
 </head>
@@ -238,46 +248,49 @@
     <nav id="sidebar">
       <ul id="resources">
         <h3>Resources</h3>
-      <% @resources.each do |r| %>
-        <li><a href="#<%= r.parameterize %>"><%= r %></a></li>
-      <% end %>
+        <% @resources.each do |resource| %>
+          <li><a href="#<%= resource.parameterize %>"><%= resource %></a></li>
+        <% end %>
       </ul>
     </nav>
     <div id="main">
-    <% @resources.each do |r| %>
-      <div class="resource" id="<%= r.parameterize %>">
-        <a name="<%= r.parameterize %>"></a>
-        <h2><%= r %></h2>
+    <% @resources.each do |resource| %>
+      <div class="resource" id="<%= resource.parameterize %>">
+        <a name="<%= resource.parameterize %>"></a>
+        <h2><%= resource %></h2>
         <hr />
       </div>
-      <% @scenarios.select { |s| s.resource == r }.sort_by(&:heading).each do |s| %>
+      <% @examples.select { |ex| ex.resource == resource }.sort_by(&:heading).each do |ex| %>
         <div class="scenario">
           <a href="javascript:void(0);">
             <i class="caret"></i>
-            <span><%= s.heading %></span>
+            <span><%= ex.heading %></span>
           </a>
           <div class="scenario-details">
-            <pre>
-              <i>Test Description</i>
-              <span>
-<%= s.steps %>
-              </span>
-            </pre>
-            <pre>
-              <i>Example JSON Request</i>
-              <span>
-<%= "#{s.request.request_method} #{s.request.path}" %>
-<%= s.request.params.to_json %>
-              </span>
-            </pre>
-            <pre>
-              <i>Example JSON Response</i>
-              <span>
-<%= "Status: #{s.response.status}" %>
+            <% if ex.steps.present? %>
+              <pre><i>Test Description</i>
+<%= ex.steps %></pre>
+            <% end %>
+            <section class="codeblock">
+              <i>Endpoint</i>
+              <pre>
+<%= "#{ex.request.request_method} #{ex.request.path}" %>
+              </pre>
+            </section>
+            <section class="codeblock">
+              <i>Parameters</i>
+              <pre>
+<%= JSON.pretty_generate(ex.request.params.except(:id, :controller, :action).to_h).strip %>
+              </pre>
+            </section>
+            <section class="codeblock">
+              <i>JSON Response</i>
+              <pre>
+<%= "Status: #{ex.response.status}" %>
 
-<%= JSON.pretty_generate(JSON.parse(s.response.body)) unless s.response.status == 500 rescue '' %>
-              </span>
-            </pre>
+<%= JSON.pretty_generate(JSON.parse(ex.response.body)) unless ex.response.status == 500 rescue '' %>
+              </pre>
+            </section>
           </div>
         </div>
       <% end %>
