@@ -1,35 +1,44 @@
 == Avocado
 
-Avocado hooks into your Rails Cucumber tests and automatically documents any
+Avocado hooks into your Rails tests and automatically documents any
 tests that have a request and response. This means that collaborating with a
 team that uses your JSON REST API is simple - just install Avocado, run your
-Cucumber suite, and commit the HTML documentation file.
+tests, and commit the HTML documentation file.
 
 == Installation
 
 Use bundler to install Avocado by adding this line to your Gemfile:
 
-  gem "avocado", :git => "git://github.com/metova/avocado.git"
+  gem "avocado", github: "metova/avocado"
 
 Install the gem:
 
   bundle install
 
-Finally, add this line to the top of +features/support/env.rb+:
+== Cucumber
+
+Add this line to the top of +features/support/env.rb+:
 
   require 'avocado/cucumber'
 
+Avocado will use +last_request+ and +last_response+ to document each scenario
+by using Cucumber's +After+ hook. These methods are part of +Rack::Test::Methods+,
+so they will be available by default in Cucumber.
+
+== RSpec
+
+Add this line to the top of +spec/spec_helper.rb+:
+
+  require 'avocado/rspec'
+
+Avocado will use +request+ and +response+ to document each spec by using RSpec's
++after(:each)+ hook.
+
 == Usage
 
-Avocado watches your tests through Cucumber's +After+ hook. Provided your API
-has good test coverage, it will be documented automatically any time you run
-your test suite.
+Provided your API has good test coverage, it will be documented automatically
+any time you run your test suite.
 
 The documentation is generated in +public/api-docs.html+, so it is accessible
-via http://your-site.com/api-docs.html. This file is completely rewritten with
-each Cucumber run, so be sure to run a full test suite before pushing any API
-changes (which you should be doing anyway!).
-
-Keep in mind that Avocado is built to document JSON APIs -- so a Rack::Request
-and Rack::Response object must be available through +last_request+ or +last_response+.
-These methods are included in Cucumber, so you shouldn't have to worry about them.
+via http://your-site.com/api-docs.html. This file is completely rewritten every
+time you run your test suite.
