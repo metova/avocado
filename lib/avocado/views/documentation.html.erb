@@ -210,6 +210,7 @@
       border-radius: 4px;
       position: relative;
       white-space: pre;
+      overflow: auto;
     }
 
     /* Header on the code blocks */
@@ -268,8 +269,12 @@
           </a>
           <div class="scenario-details">
             <% if ex.steps.present? %>
-              <pre><i>Test Description</i>
-<%= ex.steps %></pre>
+              <section class="codeblock">
+                <i>Scenario</i>
+                <pre>
+  <%= ex.steps %>
+                </pre>
+              </section>
             <% end %>
             <section class="codeblock">
               <i>Endpoint</i>
@@ -280,7 +285,8 @@
             <section class="codeblock">
               <i>Parameters</i>
               <pre>
-<%= JSON.pretty_generate(ex.request.params.except(:id, :controller, :action).to_h).strip %>
+<% params = ex.request.params.class == Hash ? ex.request.params : ex.request.params.to_h %>
+<%= JSON.pretty_generate(params.except('id', 'controller', 'action')).strip %>
               </pre>
             </section>
             <section class="codeblock">

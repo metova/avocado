@@ -1,14 +1,12 @@
 module Avocado
-  # Extension methods for "normal" scenarios (no outline)
-  module Scenario
-    attr_accessor :resource, :request, :response
+  class Scenario < Example
 
     def heading
-      title
+      example.title
     end
 
     def steps
-      expr = to_sexp
+      expr = example.to_sexp
       invocations = expr.select { |e| e.is_a?(Array) && e.first.eql?(:step_invocation) }
 
       # Combine the predicate and the step into one string.

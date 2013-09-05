@@ -1,15 +1,12 @@
 module Avocado
-  # Extension methods for scenario outlines (Cucumber passes each example row as an
-  # ExampleRow object, which is a child of ScenarioOutline (accessible through scenario_outline)
-  module ExampleRow
-    attr_accessor :resource, :request, :response
+  class ExampleRow < Example
 
     def heading
-      "#{scenario_outline.title} with #{format_name(name)}"
+      "#{example.scenario_outline.title} with #{format_name(example.name)}"
     end
 
     def steps
-      expr = scenario_outline.to_sexp
+      expr = example.scenario_outline.to_sexp
       invocations = expr.select { |e| e.is_a?(Array) && e.first.eql?(:step) }
 
       # Combine the predicate and the step into one string.
@@ -20,7 +17,7 @@ module Avocado
       invocations.map { |s| s[2] + s[3] }.join "\n"
     end
 
-  protected
+  private
 
     # The name returned for an ExampleRow is ugly:
     #    | key | value |
