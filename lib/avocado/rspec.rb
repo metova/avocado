@@ -2,8 +2,15 @@ require 'avocado'
 require 'avocado/rspec/spec'
 require 'rack/test'
 
+module AvocadoHelper
+  def app
+    Rails.application
+  end
+end
+
 RSpec.configure do |config|
 
+  config.include AvocadoHelper
   config.include Rack::Test::Methods
 
   config.after(:each) do

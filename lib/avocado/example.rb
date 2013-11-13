@@ -16,8 +16,9 @@ module Avocado
     protected
 
       def resource_name_from_url(path, method)
-        Rails.application.routes.recognize_path(path, method: method)[:controller].
-          partition('/').last.titleize.split('/').last
+        controller = Rails.application.routes.recognize_path(path, method: method)[:controller]
+        name = controller.partition('/').reject(&:blank?).last
+        name.titleize.split('/').last
       rescue ActionController::RoutingError
         nil
       end
