@@ -14,7 +14,7 @@ RSpec.configure do |config|
   config.include Rack::Test::Methods
 
   config.after(:each) do
-    Avocado::Spec.new(example).store(request, response) rescue nil
+    Avocado::Spec.new(example).store(request, response) rescue Avocado::Spec.new(example).store(@request, @response) rescue nil
   end
 
   config.after(:suite) do
