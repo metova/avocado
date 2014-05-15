@@ -1,0 +1,1 @@
+Avocado::Config.url = 'http://test.com/'
