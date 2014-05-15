@@ -20,7 +20,7 @@ Add this line to the top of +spec/spec_helper.rb+:
 
   require 'avocado/rspec'
 
-Avocado will attach an `after_action` to your controllers that will store information about your requests
+Avocado will attach an ```after_action``` to your controllers that will store information about your requests
 if they response is JSON.
 
 == Configuration
