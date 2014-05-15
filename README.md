@@ -1,18 +1,20 @@
-== Avocado
+### Avocado
 
 Avocado hooks into your Rails specs and generates a YAML file containing useful information. It sends
 that YAML file to a configurable URL where you can do whatever you want with it, such as display API
 documentation for your mobile team.
 
-== Installation
+### Installation
 
 Use bundler to install Avocado by adding this line to your Gemfile:
-
-  gem "avocado", github: "metova/avocado"
+```ruby
+gem "avocado", github: "metova/avocado"
+```
 
 Install the gem:
-
-  bundle install
+```ruby
+bundle install
+```
 
 == RSpec
 
