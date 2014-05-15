@@ -11,16 +11,16 @@ Gem::Specification.new do |s|
   s.email       = ["loganserman@gmail.com"]
   s.homepage    = "http://github.com/metova/avocado"
   s.summary     = "Automatic API documentation from RSpec tests"
-  s.description = s.summary
+  s.description = "Avocado listens for JSON responses in the test environment and generates a YAML file describing them, which it sends to a configurable URL."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
 
-  s.add_dependency "rails"
-  s.add_dependency "multipart-post"
+  s.add_dependency "rails", '>= 4.0.0'
+  s.add_dependency "multipart-post", '~> 2.0'
 
-  s.add_development_dependency "sqlite3"
-  s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "combustion"
-  s.add_development_dependency "webmock"
+  s.add_development_dependency "sqlite3", '~> 1.3'
+  s.add_development_dependency "rspec-rails", '~> 2.14'
+  s.add_development_dependency "combustion", '~> 0.5'
+  s.add_development_dependency "webmock", '~> 1.15'
 
 end
