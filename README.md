@@ -18,14 +18,14 @@ bundle install
 
 ### RSpec
 
-Add this line to the top of +spec/spec_helper.rb+:
+Add this line to the top of `spec/spec_helper.rb`:
 
 ```ruby
 require 'avocado/rspec'
 ```
 
 Avocado will attach an `after_action` to your controllers that will store information about your requests
-if they response is JSON.
+if they respond with JSON.
 
 ### Configuration
 
@@ -41,10 +41,10 @@ end
 
 `c.url` MUST be set to a valid URL. This is the URL that Avocado will POST the yaml file to.
 
-`c.headers` is an array of headers that Avocado should document if they exist (for example `['Authorization'])
+`c.headers` is an array of headers that Avocado should document if they exist (for example `['Authorization']`)
 
 `c.document_if` is a lambda (or any `call`able object) that determines whether or not Avocado will
-document a spec. You may find it useful to only run Avocado in certain environments (continuous integration for example)
+document a spec. You may find it useful to only run Avocado in certain environments (continuous integration for example), so you can check environment variables here or whatever else you need.
 
 ### Usage
 
