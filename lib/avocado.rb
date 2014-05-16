@@ -24,9 +24,12 @@ module Avocado
     File.open('avocado.yml') do |file|
       uri = URI.parse Avocado::Config.url
       req = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
-      p Net::HTTP.start(uri.host, uri.port) do |http|
+      response = Net::HTTP.start(uri.host, uri.port) do |http|
         http.request(req)
       end
+
+      p "Uploaded to #{uri.host} #{uri.port}"
+      p response
     end
   rescue URI::InvalidURIError
     raise "Avocado::Config.url should point to your mounted Avocado documentation engine, it is currently not a valid URL"
