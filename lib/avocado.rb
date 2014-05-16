@@ -24,7 +24,7 @@ module Avocado
     File.open('avocado.yml') do |file|
       uri = URI.parse Avocado::Config.url
       req = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
-      Net::HTTP.start(uri.host, uri.port) do |http|
+      p Net::HTTP.start(uri.host, uri.port) do |http|
         http.request(req)
       end
     end
