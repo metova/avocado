@@ -28,8 +28,8 @@ module Avocado
         http.request(req)
       end
 
-      p "Uploaded to #{uri.host} #{uri.port}"
-      p response
+      p "Uploaded to #{uri.host} #{uri.path} #{uri.port}"
+      p response.body
     end
   rescue URI::InvalidURIError
     raise "Avocado::Config.url should point to your mounted Avocado documentation engine, it is currently not a valid URL"
