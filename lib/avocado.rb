@@ -19,8 +19,6 @@ module Avocado
     return if @payload.size.zero?
     yaml = write_payload_to_yaml_file
     WebMock.allow_net_connect!
-
-    # read the file and upload it
     File.open('avocado.yml') do |file|
       uri = URI.parse Avocado::Config.url
       req = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
