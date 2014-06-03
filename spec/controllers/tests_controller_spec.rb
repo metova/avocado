@@ -60,5 +60,15 @@ describe TestsController do
       end
     end
 
+    context 'includes example description' do
+      let(:assertion) do
+        -> { Avocado.payload.first[:description].should == 'should have sent the description' }
+      end
+
+      it 'should have sent the description' do
+        get :json
+      end
+    end
+
   end
 end

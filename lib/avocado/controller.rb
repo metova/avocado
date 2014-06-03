@@ -14,7 +14,7 @@ module Avocado
 
     def documentable?
       !!JSON.parse(response.body)
-    rescue JSON::ParserError
+    rescue
       false
     end
 
