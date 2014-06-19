@@ -4,6 +4,9 @@ Avocado hooks into your Rails specs and generates a YAML file containing useful 
 that YAML file to a configurable URL where you can do whatever you want with it, such as display API
 documentation for your mobile team.
 
+If a URL is not configured, it will generate the YAML file locally. The file will be read by the
+Avocado::Engine whenever you visit it's mount point.
+
 ### Installation
 
 Use bundler to install Avocado by adding this line to your Gemfile:
@@ -36,15 +39,20 @@ Avocado::Config.configure do |c|
   c.url = nil
   c.headers = []
   c.document_if = -> { true }
+  c.yaml_path = Rails.root
 end
 ```
 
-`c.url` MUST be set to a valid URL. This is the URL that Avocado will POST the yaml file to.
+`c.url` can be set to a valid URL. This is the URL that Avocado will POST the yaml file to. This is useful when you
+want to run the documentation off of a CI server for example.
 
 `c.headers` is an array of headers that Avocado should document if they exist (for example `['Authorization']`)
 
 `c.document_if` is a lambda (or any `call`able object) that determines whether or not Avocado will
-document a spec. You may find it useful to only run Avocado in certain environments (continuous integration for example), so you can check environment variables here or whatever else you need.
+document a spec. You may find it useful to only run Avocado in certain environments (CI, for example), so you can check environment variables here or whatever else you need.
+
+`c.yaml_path` is the directory where the YAML file should be stored. It might be nice to change this, for example
+if you are using Capistrano you could use the shared dir, setting it `Rails.root.join('..', '..', 'shared')`.
 
 ### Usage
 
@@ -56,6 +64,16 @@ it 'will not document with Avocado', document: false do
   # ...
 end
 ```
+
+Avocado comes with a default documentation viewer you can mount.
+
+```ruby
+mount Avocado::Engine, at: '/avocado'
+```
+
+It will read avocado.yml and show a decent looking documentation page. If your URL is configured, the engine will
+accept the YAML via POST and store it on the server's file system for use. If your URL is not configured, the avocado.yml
+file will be generated anyway and will still be used on localhost.
 
 ### Middleware
 

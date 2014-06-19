@@ -1,26 +1,22 @@
 module Avocado
   class Uploader
 
-    attr_reader :payload
+    def upload(filename)
+      WebMock.allow_net_connect!
+      uri  = URI.parse Avocado::Config.url
+      file = File.open(filename)
+      req  = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
 
-    def upload(payload, file)
-      @payload = payload
-      upload! file
+      Net::HTTP.start(uri.host, uri.port) do |http|
+        http.request(req)
+      end
+    ensure
+      WebMock.disable_net_connect!
+      file.close
+      File.delete file.path
     end
 
     private
-
-      def upload!(file)
-        WebMock.allow_net_connect!
-        uri = URI.parse Avocado::Config.url
-        req = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
-        response = Net::HTTP.start(uri.host, uri.port) do |http|
-          http.request(req)
-        end
-      ensure
-        WebMock.disable_net_connect!
-        File.delete file.path
-      end
 
       def uri
         @uri ||= URI.parse Avocado::Config.url
