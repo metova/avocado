@@ -14,7 +14,7 @@ module Avocado
           method:  request.method,
           path:    request.path,
           params:  request.params.except('controller', 'action').to_h,
-          headers: headers.compact
+          headers: headers
         }
       end
 
@@ -23,7 +23,7 @@ module Avocado
         Avocado::Config.headers.each do |name|
           hash[name] = @request.headers.env["HTTP_#{name.tr('-', '_')}".upcase]
         end
-        hash
+        hash.select { |_, value| !value.nil? }
       end
 
   end

@@ -1,7 +1,7 @@
 module Avocado
   class Middleware::DocumentMetadata
 
-    # Stops the middleware chain if document: false was passed into the RSpec example
+    # return false if the :document metadata is given and is explicitly false
     def call(example, *)
       if example.metadata[:document] == false
         yield false

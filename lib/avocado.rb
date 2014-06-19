@@ -1,5 +1,6 @@
 require 'avocado/engine'
 require 'avocado/config'
+require 'avocado/uploader'
 require 'avocado/controller'
 require 'avocado/cache'
 require 'avocado/middleware'
@@ -16,20 +17,9 @@ module Avocado
   end
 
   def self.upload!
-    return if @payload.size.zero?
-    yaml = write_payload_to_yaml_file
-    WebMock.allow_net_connect!
-    File.open('avocado.yml') do |file|
-      uri = URI.parse Avocado::Config.url
-      req = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
-      response = Net::HTTP.start(uri.host, uri.port) do |http|
-        http.request(req)
-      end
+    if @payload.size > 0
+      Avocado::Uploader.new.upload(@payload)
     end
-  rescue URI::InvalidURIError
-    raise "Avocado::Config.url should point to your mounted Avocado documentation engine, it is currently not a valid URL"
-  ensure
-    WebMock.disable_net_connect!
   end
 
   def self.reset!
@@ -37,13 +27,5 @@ module Avocado
     Avocado::Config.reset!
     Avocado::Cache.clean
   end
-
-  private
-
-    def self.write_payload_to_yaml_file
-      File.open('avocado.yml', 'w+') do |file|
-        file.write payload.to_yaml
-      end
-    end
 
 end
