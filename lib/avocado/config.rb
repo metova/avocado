@@ -2,7 +2,7 @@ module Avocado
   class Config
     class << self
 
-      attr_accessor :url, :headers, :document_if
+      attr_accessor :url, :headers, :document_if, :yaml_path
 
       def configure(&block)
         yield self
@@ -14,6 +14,10 @@ module Avocado
 
       def document_if
         @document_if || -> { true }
+      end
+
+      def yaml_path
+        @yaml_path || Rails.application.root
       end
 
       def reset!

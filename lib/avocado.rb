@@ -17,8 +17,10 @@ module Avocado
   end
 
   def self.upload!
-    if @payload.size > 0
-      Avocado::Uploader.new.upload(@payload)
+    return if @payload.empty?
+    File.open('avocado.yml', 'w+') do |file|
+      file.write payload.to_yaml
+      Avocado::Uploader.new.upload(@payload, file) if Avocado::Config.url
     end
   end
 

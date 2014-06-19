@@ -1,0 +1,54 @@
+<div id="avocado">
+
+  <ul id="sidebar">
+    <% @data.resources.each do |resource| %>
+      <li><a href="#<%= resource.name %>"><%= resource.name %></a></li>
+      <ul class="dropdown">
+        <% @data.resource(resource.name).endpoints.map(&:signature).uniq.each do |signature| %>
+          <li><a href="#<%= resource.name %>"><%= signature %></a></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </ul>
+
+  <div id="requests">
+    <% @data.resources.each do |resource| %>
+      <a name="<%= resource.name %>"></a>
+      <h4><%= resource.name %></h4>
+      <ul class="request-endpoints">
+        <% resource.endpoints.each do |endpoint| %>
+          <% endpoint.requests.each do |request| %>
+            <li>
+              <a href="#" data-request-uid="<%= request.uid %>">
+                <span class="status"><%= request.status %></span>
+                <span class="url"><%= endpoint.signature %></span>
+                <span class="description"><%= request.description %></span>
+              </a>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div id="docs">
+    <% @data.requests.each do |req| %>
+      <div class="request" data-uid="<%= req.uid %>">
+        <h4><%= req.endpoint.signature %></h4>
+        <code class="request-parameters">
+<%= JSON.pretty_generate req.params.to_h %>
+        </code>
+        <code class="example-headers">
+          <% req.headers.each do |name, value| %>
+<%= name %>: <%= value %>
+          <% end %>
+        </code>
+        <code class="response-status"><%= req.status %></code>
+        <code class="response-body">
+<%= JSON.pretty_generate JSON[req.body] rescue p "NOPE: #{req.body}" %>
+          <div class="clearfix"></div>
+        </code>
+      </div>
+    <% end %>
+
+</div>

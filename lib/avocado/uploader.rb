@@ -3,21 +3,12 @@ module Avocado
 
     attr_reader :payload
 
-    def upload(payload)
+    def upload(payload, file)
       @payload = payload
-      return if Avocado::Config.url.nil?
-      yaml = write_documentation
-      File.open('avocado.yml') { |file| upload! file }
-      File.delete 'avocado.yml'
+      upload! file
     end
 
     private
-
-      def write_documentation
-        File.open('avocado.yml', 'w+') do |file|
-          file.write payload.to_yaml
-        end
-      end
 
       def upload!(file)
         WebMock.allow_net_connect!
@@ -28,6 +19,7 @@ module Avocado
         end
       ensure
         WebMock.disable_net_connect!
+        File.delete file.path
       end
 
       def uri

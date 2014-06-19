@@ -10,4 +10,12 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require_tree .
+//= require jquery
+//= require jquery_ujs
+
+$(document).on('click', 'a[data-request-uid]', function(e) {
+  var uid = $(this).data('request-uid');
+  $('.request').hide(0, function() {
+    $('.request[data-uid="' + uid + '"]').show();
+  });
+});
