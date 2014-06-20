@@ -13,7 +13,7 @@ module Avocado
     end
 
     def documentable?
-      !!JSON.parse(response.body) || response.body.empty?
+      response.body.empty? || !!JSON.parse(response.body)
     rescue
       false
     end
