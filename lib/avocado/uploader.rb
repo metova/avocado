@@ -5,7 +5,8 @@ module Avocado
       WebMock.allow_net_connect!
       uri  = URI.parse Avocado::Config.url
       file = File.open(filename)
-      req  = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
+      req  = Net::HTTP::Post::Multipart.new uri.path,
+              'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
 
       Net::HTTP.start(uri.host, uri.port) do |http|
         http.request(req)

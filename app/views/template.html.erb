@@ -45,7 +45,7 @@
         </code>
         <code class="response-status"><%= req.status %></code>
         <code class="response-body">
-<%= JSON.pretty_generate JSON[req.body] rescue p "NOPE: #{req.body}" %>
+<%= JSON.pretty_generate JSON[req.body] rescue '' %>
           <div class="clearfix"></div>
         </code>
       </div>
