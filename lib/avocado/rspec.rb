@@ -10,7 +10,7 @@ RSpec.configure do |config|
     request  = Avocado::Cache.request
     response = Avocado::Cache.response
     if request && response
-      Avocado::Middleware.invoke(example, request, response) do
+      Avocado::Middleware.invoke(request, response) do
         Avocado.payload << Avocado::Cache.json
       end
     end
