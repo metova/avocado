@@ -1,7 +1,7 @@
 module Avocado
   class Middleware::ResponseSerialization
 
-    def call(example, request, response)
+    def call(request, response)
       Avocado::Cache.json.merge! response: serialize(response)
       yield
     end

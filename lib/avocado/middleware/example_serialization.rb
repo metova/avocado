@@ -1,8 +1,8 @@
 module Avocado
   class Middleware::ExampleSerialization
 
-    def call(example, *)
-      Avocado::Cache.json[:description] = example.description
+    def call(*)
+      Avocado::Cache.json[:description] = RSpec.current_example.description
       yield
     end
 
