@@ -1,5 +1,6 @@
 RSpec.configure do |config|
 
+  config.before(:suite) { ActionController::API.send :include, Avocado::Controller }
   config.before(:suite) { ActionController::Base.send :include, Avocado::Controller }
   config.after(:suite)  { Avocado.upload! }
 
