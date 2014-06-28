@@ -13,7 +13,7 @@ module Avocado
         {
           method:  request.method,
           path:    request.path,
-          params:  request.params.except('controller', 'action', 'data').to_h,
+          params:  request.params.except(:controller, :action).to_h,
           headers: headers
         }
       end
