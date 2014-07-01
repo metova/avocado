@@ -13,6 +13,6 @@ gemspec
 # To use debugger
 # gem 'debugger'
 
-group :development do
+group :test do
   gem 'rake'
 end
