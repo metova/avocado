@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    avocado (2.0.3)
+    avocado (2.0.4)
       multipart-post (~> 2.0)
       rails (>= 4.0.0)
 
