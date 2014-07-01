@@ -1,4 +1,5 @@
-### Avocado
+Avocado [![Build Status](https://travis-ci.org/metova/avocado.svg?branch=master)](https://travis-ci.org/metova/avocado)
+=======
 
 Avocado hooks into your Rails specs and generates a YAML file containing useful information. It sends
 that YAML file to a configurable URL where you can do whatever you want with it, such as display API
