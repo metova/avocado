@@ -3,3 +3,4 @@ log/*.log
 pkg/
 avocado.yml
 *.gem
+Gemfile.lock
