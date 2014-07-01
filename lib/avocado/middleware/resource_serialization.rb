@@ -1,7 +1,7 @@
 module Avocado
   class Middleware::ResourceSerialization
 
-    def call(request, response)
+    def call(example, request, response)
       name = infer_name_from_route(request.path, request.method) || ""
       Avocado::Cache.json.merge! resource: { name: name }
       yield
