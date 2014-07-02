@@ -10,10 +10,14 @@ module Avocado
     private
 
       def serialize(request)
+        params = request.params.except(:controller, :action)
+        if params.has_key?(:data)
+          params[:data] = "Some Multipart Form File Upload"
+        end
         {
           method:  request.method,
           path:    request.path,
-          params:  request.params.except('controller', 'action').to_h,
+          params:  params.to_h,
           headers: headers
         }
       end
