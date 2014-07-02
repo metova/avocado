@@ -25,7 +25,7 @@ module Avocado
       end
 
       def reset!
-        @headers, @document_if = nil, nil
+        @headers = @document_if = @yaml_path = @ignored_params = nil
       end
 
     end

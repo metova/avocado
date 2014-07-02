@@ -27,8 +27,8 @@ module Avocado
       end
 
       def sanitize_params(params)
-        params.update(params) do |k, v|
-          v = '<Multipart File Upload>' if v.respond_to? :path
+        params.each do |k, v|
+          params[k] = '<Multipart File Upload>' if v.respond_to? :path
         end
         params.except(*Avocado::Config.ignored_params.flatten)
       end
