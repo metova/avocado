@@ -27,10 +27,19 @@ module Avocado
       end
 
       def sanitize_params(params)
-        params.each do |k, v|
-          params[k] = '<Multipart File Upload>' if v.respond_to? :path
+        params = params.except(*Avocado::Config.ignored_params.flatten)
+        deep_replace_file_uploads_with_text(params)
+        params
+      end
+
+      def deep_replace_file_uploads_with_text(hash)
+        hash.each do |k, v|
+          if Hash === v
+            deep_replace_file_uploads_with_text(v)
+          else
+            hash[k] = '<Multipart File Upload>' if v.respond_to? :path
+          end
         end
-        params.except(*Avocado::Config.ignored_params.flatten)
       end
 
   end

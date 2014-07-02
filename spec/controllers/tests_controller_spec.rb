@@ -38,12 +38,24 @@ describe TestsController do
       assertion.call
     end
 
-    let(:assertion) do
-      -> { Avocado.payload.first[:request][:params]['file'].should == "<Multipart File Upload>" }
+    context 'when file is at the top level params hash' do
+      let(:assertion) do
+        -> { Avocado.payload.first[:request][:params]['file'].should == "<Multipart File Upload>" }
+      end
+
+      it 'should show when files are uploaded' do
+        get :json, file: Rack::Test::UploadedFile.new(__FILE__, 'text/plain')
+      end
     end
 
-    it 'should show when files are uploaded' do
-      get :json, file: Rack::Test::UploadedFile.new(__FILE__, 'text/plain')
+    context 'when file is deeper within params hash' do
+      let(:assertion) do
+        -> { Avocado.payload.first[:request][:params]['user']['avatar'].should == "<Multipart File Upload>" }
+      end
+
+      it 'should show when files are uploaded' do
+        get :json, user: { avatar: Rack::Test::UploadedFile.new(__FILE__, 'text/plain') }
+      end
     end
   end
 
