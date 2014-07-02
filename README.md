@@ -40,6 +40,7 @@ Avocado::Config.configure do |c|
   c.headers = []
   c.document_if = -> { true }
   c.yaml_path = Rails.root
+  c.ignored_params = ['controller', 'action']
 end
 ```
 
@@ -53,6 +54,9 @@ document a spec. You may find it useful to only run Avocado in certain environme
 
 `c.yaml_path` is the directory where the YAML file should be stored. It might be nice to change this, for example
 if you are using Capistrano you could use the shared dir, setting it `Rails.root.join('..', '..', 'shared')`.
+
+`c.ignored_params` is a list of params that are ignored during documentation. By default, the 'controller' and 'action' params that
+Rails sends with every request are ignored. You can add to this array via `<<`, or override it entirely with `=`.
 
 ### Usage
 

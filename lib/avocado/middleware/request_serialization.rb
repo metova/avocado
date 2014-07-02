@@ -13,7 +13,7 @@ module Avocado
         {
           method:  request.method,
           path:    request.path,
-          params:  request.params.except('controller', 'action').to_h,
+          params:  sanitize_params(request.params).to_h,
           headers: headers
         }
       end
@@ -24,6 +24,13 @@ module Avocado
           hash[name] = @request.headers.env["HTTP_#{name.tr('-', '_')}".upcase]
         end
         hash.select { |_, value| !value.nil? }
+      end
+
+      def sanitize_params(params)
+        params.update(params) do |k, v|
+          v = '<Multipart File Upload>' if v.respond_to? :path
+        end
+        params.except(*Avocado::Config.ignored_params.flatten)
       end
 
   end

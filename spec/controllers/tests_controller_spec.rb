@@ -31,6 +31,22 @@ describe TestsController do
     end
   end
 
+  describe 'File uploads' do
+    around do |example|
+      Avocado.reset!
+      example.run
+      assertion.call
+    end
+
+    let(:assertion) do
+      -> { Avocado.payload.first[:request][:params]['file'].should == "<Multipart File Upload>" }
+    end
+
+    it 'should show when files are uploaded' do
+      get :json, file: Rack::Test::UploadedFile.new(__FILE__, 'text/plain')
+    end
+  end
+
   describe 'Avocado.payload' do
     around do |example|
       Avocado.reset!
@@ -57,6 +73,17 @@ describe TestsController do
         @request.headers['X-Example-Header'] = 123
         Avocado::Config.headers = ['X-Example-Header']
         get :json, nil
+      end
+    end
+
+    context 'ignored params' do
+      let(:assertion) do
+        -> { Avocado.payload.first[:request][:params].should == {} }
+      end
+
+      it 'should not contain ignored params that are concat' do
+        Avocado::Config.ignored_params << 'parameter'
+        get :json, parameter: 123
       end
     end
 

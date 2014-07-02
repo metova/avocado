@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     avocado (2.0.4)
-      multipart-post (~> 2.0)
+      multipart-post (>= 1.1)
       rails (>= 4.0.0)
 
 GEM
