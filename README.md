@@ -12,7 +12,7 @@ Avocado::Engine whenever you visit it's mount point.
 
 Use bundler to install Avocado by adding this line to your Gemfile:
 ```
-gem "avocado-docs", "~> 2.0.5"
+gem "avocado-docs", "~> 2.0.6"
 ```
 
 Install the gem:
