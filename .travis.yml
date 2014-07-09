@@ -11,4 +11,4 @@ deploy:
   on:
     tags: true
     repo: metova/avocado
-    branch: master
+    all_branches: true
