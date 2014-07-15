@@ -6,16 +6,20 @@ module Avocado
     extend ActiveSupport::Concern
 
     included do
-      after_action -> do
-        Avocado::Cache.clean
-        Avocado::Cache.store(request, response) if documentable?
-      end
+      around_action :store_request_and_response_for_avocado
     end
 
     def documentable?
       response.body.blank? || !!JSON.parse(response.body)
     rescue
       false
+    end
+
+    def store_request_and_response_for_avocado
+      yield
+    ensure
+      Avocado::Cache.clean
+      Avocado::Cache.store(request, response) if documentable?
     end
 
   end
