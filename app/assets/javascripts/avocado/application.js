@@ -30,3 +30,4 @@ $(document).on('click', 'a[data-request-uid]', function(e) {
     $('.request[data-uid="' + uid + '"]').show();
   });
 });
+
