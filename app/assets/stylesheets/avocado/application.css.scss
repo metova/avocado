@@ -67,6 +67,10 @@ html, body, #avocado {
     overflow: scroll;
     float: left;
 
+    .highlight {
+      background-color: #acb9bf;
+    }
+
     .request-endpoints {
       margin-bottom: 40px;
 

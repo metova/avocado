@@ -25,9 +25,10 @@ $(document).on('ready', function(){
 });
 
 $(document).on('click', 'a[data-request-uid]', function(e) {
+  $('#requests .highlight').removeClass('highlight');
+  $(e.target.parentNode).addClass('highlight');
   var uid = $(this).data('request-uid');
   $('.request').hide(0, function() {
     $('.request[data-uid="' + uid + '"]').show();
   });
 });
-

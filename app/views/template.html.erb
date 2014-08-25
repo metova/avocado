@@ -18,7 +18,7 @@
       <ul class="request-endpoints">
         <% resource.endpoints.each do |endpoint| %>
           <% endpoint.requests.each do |request| %>
-            <li>
+            <li class='request-item'>
               <a href="#" data-request-uid="<%= request.uid %>">
                 <span class="status"><%= request.status %></span>
                 <span class="url"><%= endpoint.signature %></span>
