@@ -12,6 +12,17 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require interact.min
+
+$(document).on('ready', function(){
+  interact('#sidebar', '#requests', '#docs').resizeable(true).on('resizemove', function (event) {
+    var target = event.target;
+    var newWidth  = parseFloat($(target).width()) + event.dx;
+    $(target).width(newWidth + 'px');
+    //I have to add 40 so that the request div doesn't go behind the sidebar div
+    $('#requests').css('margin-left', (newWidth + 40) + 'px');
+  });
+});
 
 $(document).on('click', 'a[data-request-uid]', function(e) {
   var uid = $(this).data('request-uid');
@@ -19,3 +30,4 @@ $(document).on('click', 'a[data-request-uid]', function(e) {
     $('.request[data-uid="' + uid + '"]').show();
   });
 });
+
