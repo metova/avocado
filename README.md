@@ -40,7 +40,7 @@ Avocado::Config.configure do |c|
   c.url = nil
   c.headers = []
   c.document_if = -> { true }
-  c.yaml_path = Rails.root
+  c.json_path = Rails.root
   c.ignored_params = ['controller', 'action']
 end
 ```
@@ -53,7 +53,7 @@ want to run the documentation off of a CI server for example.
 `c.document_if` is a lambda (or any `call`able object) that determines whether or not Avocado will
 document a spec. You may find it useful to only run Avocado in certain environments (CI, for example), so you can check environment variables here or whatever else you need.
 
-`c.yaml_path` is the directory where the YAML file should be stored. It might be nice to change this, for example
+`c.json_path` is the directory where the JSON file should be stored. It might be nice to change this, for example
 if you are using Capistrano you could use the shared dir, setting it `Rails.root.join('..', '..', 'shared')`.
 
 `c.ignored_params` is a list of params that are ignored during documentation. By default, the 'controller' and 'action' params that

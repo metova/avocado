@@ -1,9 +1,9 @@
 module Avocado
   class Middleware::RequestSerialization
 
-    def call(example, request, response)
-      @request = request
-      Avocado::Cache.json.merge! request: serialize(@request)
+    def call(package)
+      @request = package.request
+      Avocado::RequestStore.instance.json.merge! request: serialize(@request)
       yield
     end
 
@@ -34,10 +34,11 @@ module Avocado
 
       def deep_replace_file_uploads_with_text(hash)
         hash.each do |k, v|
-          if Hash === v
+          case v
+          when Hash
             deep_replace_file_uploads_with_text(v)
-          else
-            hash[k] = '<Multipart File Upload>' if v.respond_to? :path
+          when Rack::Test::UploadedFile
+            hash[k] = '<Multipart File Upload>'
           end
         end
       end

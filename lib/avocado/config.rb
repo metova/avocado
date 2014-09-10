@@ -2,7 +2,7 @@ module Avocado
   class Config
     class << self
 
-      attr_accessor :url, :headers, :document_if, :yaml_path, :ignored_params
+      attr_accessor :url, :headers, :document_if, :json_path, :ignored_params
 
       def configure(&block)
         yield self
@@ -16,8 +16,8 @@ module Avocado
         @document_if || -> { true }
       end
 
-      def yaml_path
-        @yaml_path || Rails.application.root
+      def json_path
+        @json_path || Rails.application.root
       end
 
       def ignored_params
@@ -25,7 +25,10 @@ module Avocado
       end
 
       def reset!
-        @headers = @document_if = @yaml_path = @ignored_params = nil
+        @headers = nil
+        @document_if = nil
+        @json_path = nil
+        @ignored_params = nil
       end
 
     end

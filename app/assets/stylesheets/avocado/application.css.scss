@@ -13,9 +13,30 @@
  *= require_tree .
  */
 
-html, body, #avocado {
+html, body, .left-side, .right-side {
   height: 100%;
   min-height: 100%;
+}
+
+.left-side, .right-side {
+  padding-top: 30px;
+}
+
+.left-side {
+  float: left;
+  width: 50%;
+}
+
+.right-side {
+  overflow: hidden;
+}
+
+.top-bar {
+  height: 60px;
+  width: 100%;
+  background-color: #fafafa;
+  position: fixed;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 #avocado {

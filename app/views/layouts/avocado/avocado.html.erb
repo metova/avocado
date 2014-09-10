@@ -5,10 +5,11 @@
   <%= stylesheet_link_tag    "avocado/application", media: "all" %>
   <%= javascript_include_tag "avocado/application" %>
   <%= csrf_meta_tags %>
+  <script type="text/javascript">
+    var data = <%= @data.html_safe %>;
+  </script>
 </head>
-<body>
-
+<body ng-app="avocado">
 <%= yield %>
-
 </body>
 </html>

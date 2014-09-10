@@ -1,22 +1,42 @@
 module Avocado
   class Uploader
+    include Singleton
 
-    def upload(filename)
+    attr_accessor :payload
+
+    def initialize
+      @payload = []
+    end
+
+    def upload!
+      return if payload.empty?
+      return unless should_upload?
       WebMock.allow_net_connect!
-      uri  = URI.parse Avocado::Config.url
-      file = File.open(filename)
-      req  = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/yaml', 'avocado.yml')
-      Net::HTTP.start(uri.host, uri.port) { |http| http.request(req) }
+      write_payload_to_json_file do |file|
+        request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
+        Net::HTTP.start(uri.host, uri.port) { |http| http.request(request) }
+      end
     ensure
       WebMock.disable_net_connect!
-      file.close
-      File.delete file.path
     end
 
     private
 
+      def write_payload_to_json_file(&block)
+        File.write 'avocado.json', JSON[payload]
+        file = File.open 'avocado.json'
+        yield(file)
+      ensure
+        file.close
+        # File.delete file.path
+      end
+
+      def should_upload?
+        !!Avocado::Config.url.presence
+      end
+
       def uri
-        @uri ||= URI.parse Avocado::Config.url
+        @_uri ||= URI.parse Avocado::Config.url
       rescue URI::InvalidURIError
         raise "Avocado::Config.url is set but is not a valid URL!"
       end

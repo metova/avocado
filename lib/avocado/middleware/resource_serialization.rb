@@ -1,9 +1,10 @@
 module Avocado
   class Middleware::ResourceSerialization
 
-    def call(example, request, response)
-      name = infer_name_from_route(request.path, request.method) || ""
-      Avocado::Cache.json.merge! resource: { name: name }
+    def call(package)
+      request = package.request
+      name = infer_name_from_route(request.path, request.method) || ''
+      Avocado::RequestStore.instance.json.merge! resource: { name: name }
       yield
     end
 
@@ -14,7 +15,6 @@ module Avocado
         name = controller.partition('/').reject(&:blank?).last
         name.titleize.split('/').last
       rescue ActionController::RoutingError
-        puts "Path #{path} not found in controller routes; Defaulting name to path."
         path
       end
 

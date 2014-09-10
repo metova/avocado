@@ -2,20 +2,19 @@ module Avocado
   class AvocadoController < ActionController::Base
 
     def create
-      File.open(yaml, 'w+') { |f| f.write params[:file].read }
+      File.open(json, 'w+') { |f| f.write params[:file].read }
       head :ok
     end
 
     def index
-      hash = YAML.load File.read(yaml)
-      @data = Avocado::Parser.new(hash)
+      @data = File.read(json)
       render '/template'
     end
 
     private
 
-      def yaml
-        Avocado::Config.yaml_path.join('avocado.yml')
+      def json
+        Avocado::Config.json_path.join('avocado.json')
       end
 
   end

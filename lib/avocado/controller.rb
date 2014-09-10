@@ -6,7 +6,7 @@ module Avocado
     extend ActiveSupport::Concern
 
     included do
-      around_action :store_request_and_response_for_avocado
+      around_action :store_request_and_response_in_avocado
     end
 
     def documentable?
@@ -15,11 +15,11 @@ module Avocado
       false
     end
 
-    def store_request_and_response_for_avocado
+    def store_request_and_response_in_avocado
       yield
     ensure
-      Avocado::Cache.clean
-      Avocado::Cache.store(request, response) if documentable?
+      Avocado::RequestStore.instance.reset!
+      Avocado::RequestStore.instance.store(request, response) if documentable?
     end
 
   end

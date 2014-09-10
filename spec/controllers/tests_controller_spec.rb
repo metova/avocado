@@ -2,7 +2,7 @@ describe TestsController do
   context 'when requests SHOULD be documented' do
     around do |example|
       Avocado.reset!
-      expect { example.run }.to change { Avocado.payload.size }.from(0).to(1)
+      expect { example.run }.to change { Avocado::Uploader.instance.payload.size }.from(0).to(1)
     end
 
     it 'stores JSON requests in Avocado' do
@@ -14,7 +14,7 @@ describe TestsController do
     around do |example|
       Avocado.reset!
       example.run
-      Avocado.payload.should == []
+      Avocado::Uploader.instance.payload.should == []
     end
 
     it 'does not store non-JSON requests' do
@@ -40,7 +40,7 @@ describe TestsController do
 
     context 'when file is at the top level params hash' do
       let(:assertion) do
-        -> { Avocado.payload.first[:request][:params]['file'].should == "<Multipart File Upload>" }
+        -> { Avocado::Uploader.instance.payload.first[:request][:params]['file'].should == "<Multipart File Upload>" }
       end
 
       it 'should show when files are uploaded' do
@@ -50,7 +50,7 @@ describe TestsController do
 
     context 'when file is deeper within params hash' do
       let(:assertion) do
-        -> { Avocado.payload.first[:request][:params]['user']['avatar'].should == "<Multipart File Upload>" }
+        -> { Avocado::Uploader.instance.payload.first[:request][:params]['user']['avatar'].should == "<Multipart File Upload>" }
       end
 
       it 'should show when files are uploaded' do
@@ -68,7 +68,7 @@ describe TestsController do
 
     context 'with params' do
       let(:assertion) do
-        -> { Avocado.payload.first[:request][:params].should == { 'parameter' => '123' } }
+        -> { Avocado::Uploader.instance.payload.first[:request][:params].should == { 'parameter' => '123' } }
       end
 
       it 'should have sent the params' do
@@ -78,7 +78,7 @@ describe TestsController do
 
     context 'with headers' do
       let(:assertion) do
-        -> { Avocado.payload.first[:request][:headers].should == { 'X-Example-Header' => 123 } }
+        -> { Avocado::Uploader.instance.payload.first[:request][:headers].should == { 'X-Example-Header' => 123 } }
       end
 
       it 'should send the header' do
@@ -90,7 +90,7 @@ describe TestsController do
 
     context 'ignored params' do
       let(:assertion) do
-        -> { Avocado.payload.first[:request][:params].should == {} }
+        -> { Avocado::Uploader.instance.payload.first[:request][:params].should == {} }
       end
 
       it 'should not contain ignored params that are concat' do
@@ -101,7 +101,7 @@ describe TestsController do
 
     context 'includes example description' do
       let(:assertion) do
-        -> { Avocado.payload.first[:description].should == 'should have sent the description' }
+        -> { Avocado::Uploader.instance.payload.first[:description].should == 'should have sent the description' }
       end
 
       it 'should have sent the description' do
