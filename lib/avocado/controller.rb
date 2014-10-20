@@ -10,7 +10,7 @@ module Avocado
     end
 
     def documentable?
-      response.body.blank? || !!JSON.parse(response.body)
+      (response.status == 204 && response.body.blank?) || !!JSON.parse(response.body)
     rescue
       false
     end
