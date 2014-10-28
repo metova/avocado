@@ -73,4 +73,12 @@ angular.module('avocado.controllers').
     $scope.$watch 'endpoints', (endpoints) ->
       $scope.filterEndpoints()
 
+    $scope.search = (endpoint) ->
+      query = $scope.query
+      return true if !query
+      terms = [ endpoint.request.path, endpoint.description ]
+      for term in terms
+        return true if term.indexOf(query) != -1
+      false
+
   ]

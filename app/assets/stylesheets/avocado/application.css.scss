@@ -112,12 +112,26 @@ ul, ol {
   border-bottom: 1px solid #e8e8e8;
   padding-left: 20px;
 
-  select {
+  select, input[type=text] {
     height: 40px;
     min-width: 300px;
     margin-top: 10px;
     background-color: #fff;
     border: 1px solid #ccc;
+    float: left;
+  }
+
+  input[type=text] {
+    height: 40px;
+    margin-left: 10px;
+    border-radius: 4px;
+    padding-left: 8px;
+  }
+
+  #toggle-filter {
+    margin: 16px 10px 0 0;
+    display: block;
+    float: left;
   }
 }
 

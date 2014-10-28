@@ -1,11 +1,12 @@
 <div class="top-bar">
+  <a href="#" id="toggle-filter"><%= image_tag 'avocado/filter-icon.png'%></a>
   <select ng-model="selectedResource" ng-change="switchResource()">
     <option ng-selected="true">All</option>
     <option ng-repeat="endpoint in allEndpoints | unique: 'resource.name' | orderBy: 'resource.name'"/>
       {{endpoint.resource.name}}
     </option>
   </select>
-  <a href="#" id="toggle-filter"><%= image_tag 'avocado/filter-icon.png'%></a>
+  <input type="text" ng-model="query" placeholder="Search..." />
   <div class="filters">
     <label ng-repeat="filter in filters">
       <input type="checkbox" ng-model="filter.selected" value="{{filter.name}}" />
@@ -15,7 +16,7 @@
 </div>
 <div class="left-side">
   <ul>
-    <li ng-repeat="endpoint in filteredEndpoints" ng-click="chooseEndpoint(endpoint)">
+    <li ng-repeat="endpoint in filteredEndpoints | filter: search" ng-click="chooseEndpoint(endpoint)">
       <span class="status-code">{{endpoint.response.statusCode}}</span>
       <span class="url">{{endpoint.request.method}} {{endpoint.request.path}}</span>
       <span class="description">{{endpoint.description}}</span>
