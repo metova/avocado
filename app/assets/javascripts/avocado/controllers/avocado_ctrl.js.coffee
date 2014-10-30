@@ -1,10 +1,17 @@
 angular.module('avocado.controllers').
-  controller 'AvocadoCtrl', ['$scope', 'Endpoint', ($scope, Endpoint) ->
+  controller 'AvocadoCtrl', ['$scope', '$location', 'Endpoint', ($scope, $location, Endpoint) ->
 
     $scope.allEndpoints = Endpoint.all()
     $scope.endpoints = Endpoint.all()
     $scope.filteredEndpoints = $scope.endpoints
     $scope.activeFilters = []
+
+    if $location.path().length > 0
+      endpointUID = $location.path().substr(1)
+      for endpoint in $scope.allEndpoints
+        if endpoint.uuid == endpointUID
+          $scope.currentEndpoint = endpoint
+          break
 
     $scope.switchResource = ->
       resourceName = $scope.selectedResource.replace(/\s+/g, "")
@@ -15,6 +22,7 @@ angular.module('avocado.controllers').
 
     $scope.chooseEndpoint = (endpoint) ->
       $scope.currentEndpoint = endpoint
+      $location.path(endpoint.uuid)
 
     $scope.filters = [
       {

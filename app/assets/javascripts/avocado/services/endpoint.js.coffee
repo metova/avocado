@@ -6,6 +6,7 @@ angular.module('avocado.services').factory 'Endpoint', ['Request', 'Response', '
       @request  = new Request(json.request)
       @response = new Response(json.response)
       @resource = new Resource(json.resource)
+      @uuid = @generateMD5Hash(@request, @response)
 
     @all: ->
       window.data.map (json) ->
@@ -14,5 +15,9 @@ angular.module('avocado.services').factory 'Endpoint', ['Request', 'Response', '
     @findByResource: (resourceName) ->
       $.grep @all(), (endpoint) =>
         endpoint.resource.name == resourceName
+
+    generateMD5Hash: (request, response) ->
+      hashTarget = request.method + request.path + request.params + request.headers
+      CryptoJS.MD5(hashTarget).toString().substr(0, 7);
 
 ]

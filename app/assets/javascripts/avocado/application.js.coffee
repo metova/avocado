@@ -16,6 +16,7 @@
 #= require avocado/angular-route.min
 #= require avocado/ui-utils.min
 #= require avocado/app
+#= require avocado/md5
 #= require_tree .
 
 $ ->

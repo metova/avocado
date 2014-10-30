@@ -4,9 +4,9 @@ module Avocado
     # return false if the :document metadata is given and is explicitly false
     def call(package)
       if package.document?
-        yield false
-      else
         yield
+      else
+        yield false
       end
     end
 

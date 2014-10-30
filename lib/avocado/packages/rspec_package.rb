@@ -7,7 +7,7 @@ module Avocado
       end
 
       def document?
-        example.metadata[:document] == false
+        example.metadata[:document] != false
       end
 
     end
