@@ -1,3 +1,3 @@
 module Avocado
-  VERSION = "2.0.6"
+  VERSION = "3.0.0"
 end
