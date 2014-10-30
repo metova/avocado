@@ -47,7 +47,7 @@ ul, ol {
     }
 
     &:hover {
-      background-color: #fafafa;
+      background-color: #f1f1f1;
     }
 
     .status-code {
@@ -65,6 +65,10 @@ ul, ol {
     .description {
       display: block;
       font-size: 12px;
+    }
+
+    &.active {
+      background-color: #e4edf7;
     }
   }
 }

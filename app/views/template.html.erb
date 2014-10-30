@@ -16,7 +16,7 @@
 </div>
 <div class="left-side">
   <ul>
-    <li ng-repeat="endpoint in filteredEndpoints | filter: search" ng-click="chooseEndpoint(endpoint)">
+    <li ng-repeat="endpoint in filteredEndpoints | filter: search" ng-click="chooseEndpoint(endpoint)" ng-class="{ 'active': (endpoint == currentEndpoint) }">
       <span class="status-code">{{endpoint.response.statusCode}}</span>
       <span class="url">{{endpoint.request.method}} {{endpoint.request.path}}</span>
       <span class="description">{{endpoint.description}}</span>
