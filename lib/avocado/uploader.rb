@@ -9,7 +9,6 @@ module Avocado
     end
 
     def upload!
-      p payload
       return unless should_upload?
       WebMock.allow_net_connect!
       write_payload_to_json_file do |file|
