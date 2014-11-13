@@ -13,7 +13,9 @@ module Avocado
       WebMock.allow_net_connect!
       write_payload_to_json_file do |file|
         request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
-        Net::HTTP.start(uri.host, uri.port) { |http| http.request(request) }
+        net_request = Net::HTTP.new(uri.host, uri.port)
+        net_request.use_ssl = (uri.scheme == 'https')
+        net_request.start { |http| http.request(request) }
       end
     ensure
       WebMock.disable_net_connect!
