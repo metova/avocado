@@ -13,6 +13,8 @@ angular.module('avocado.services').factory 'Endpoint', ['Request', 'Response', '
         new Endpoint(json)
 
     @findByResource: (resourceName) ->
+      console.log "All: #{@all()}"
+      console.log "resourceName: #{resourceName}"
       $.grep @all(), (endpoint) =>
         endpoint.resource.name == resourceName
 

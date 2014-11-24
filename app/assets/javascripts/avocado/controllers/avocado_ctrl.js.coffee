@@ -14,7 +14,8 @@ angular.module('avocado.controllers').
           break
 
     $scope.switchResource = ->
-      resourceName = $scope.selectedResource
+      resourceName = $scope.selectedResource.replace(/\s+/g, "")
+
       if resourceName is 'All'
         $scope.endpoints = Endpoint.all()
       else
