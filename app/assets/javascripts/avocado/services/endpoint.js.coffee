@@ -13,10 +13,8 @@ angular.module('avocado.services').factory 'Endpoint', ['Request', 'Response', '
         new Endpoint(json)
 
     @findByResource: (resourceName) ->
-      console.log "All: #{@all()}"
-      console.log "resourceName: #{resourceName}"
       $.grep @all(), (endpoint) =>
-        endpoint.resource.name == resourceName
+        endpoint.resource.name.replace(/\s+/g, "") == resourceName
 
     generateMD5Hash: (request, response) ->
       hashTarget = request.method + request.path + request.params + request.headers
