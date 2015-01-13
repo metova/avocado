@@ -10,7 +10,7 @@ module Avocado
 
     def upload!
       return unless should_upload?
-      WebMock.allow_net_connect!
+      WebMock.allow_net_connect! if defined? WebMock
       write_payload_to_json_file do |file|
         request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
         net_request = Net::HTTP.new(uri.host, uri.port)
@@ -18,7 +18,7 @@ module Avocado
         net_request.start { |http| http.request(request) }
       end
     ensure
-      WebMock.disable_net_connect!
+      WebMock.disable_net_connect! if defined? WebMock
     end
 
     private
