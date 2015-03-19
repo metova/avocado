@@ -16,6 +16,16 @@ module Avocado
         net_request = Net::HTTP.new(uri.host, uri.port)
         net_request.use_ssl = (uri.scheme == 'https')
         net_request.start { |http| http.request(request) }
+
+        case response
+          when Net::HTTPSuccess then
+            response
+          when Net::HTTPRedirection then
+            location = response['location']
+            raise "Avocado was redirected to '#{location}', update your initializer!"
+          else
+            raise response.value
+        end
       end
     ensure
       WebMock.disable_net_connect! if defined? WebMock
