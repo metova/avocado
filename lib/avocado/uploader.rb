@@ -29,7 +29,7 @@ module Avocado
         yield(file)
       ensure
         file.close
-        # File.delete file.path
+        File.delete file.path
       end
 
       def should_upload?
