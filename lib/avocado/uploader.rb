@@ -15,7 +15,7 @@ module Avocado
         request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
         net_request = Net::HTTP.new(uri.host, uri.port)
         net_request.use_ssl = (uri.scheme == 'https')
-        net_request.start { |http| http.request(request) }
+        response = net_request.start { |http| http.request(request) }
 
         case response
           when Net::HTTPSuccess then
