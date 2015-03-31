@@ -34,10 +34,11 @@ module Avocado
 
       def deep_replace_file_uploads_with_text(hash)
         hash.each do |k, v|
-          case v
-          when Hash
+          if v.is_a? Hash
             deep_replace_file_uploads_with_text(v)
-          when Rack::Test::UploadedFile
+          elsif v.is_a? Array
+            v.each { |element| deep_replace_file_uploads_with_text(_: element) }
+          elsif v.respond_to? :eof
             hash[k] = '<Multipart File Upload>'
           end
         end
