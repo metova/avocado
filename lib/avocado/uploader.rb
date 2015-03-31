@@ -34,8 +34,8 @@ module Avocado
     private
 
       def write_payload_to_json_file(&block)
-        File.write 'avocado.json', JSON[payload]
-        file = File.open 'avocado.json'
+        file = File.open 'avocado.json', 'wb+'
+        file.write 'avocado.json', JSON[payload]
         yield(file)
       ensure
         file.close
