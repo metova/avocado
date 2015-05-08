@@ -2,24 +2,23 @@
 # The after_action will ensure every request gets documented regardless of the
 # type of test (controller, integration, etc)
 module Avocado
-  module Controller
+  module ControllerPatch
     extend ActiveSupport::Concern
 
     included do
-      around_action :store_request_and_response_in_avocado
+      around_action :_store_request
     end
 
-    def documentable?
+    def _documentable?
       (response.status == 204 && response.body.blank?) || !!JSON.parse(response.body)
     rescue
       false
     end
 
-    def store_request_and_response_in_avocado
+    def _store_request
       yield
     ensure
-      Avocado::RequestStore.instance.reset!
-      Avocado::RequestStore.instance.store(request, response) if documentable?
+      Avocado::EndpointStore.instance.store(request, response) if _documentable?
     end
 
   end

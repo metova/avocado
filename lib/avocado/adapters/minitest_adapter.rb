@@ -1,6 +1,6 @@
 module Avocado
-  module Packages
-    class MinitestPackage < Package
+  module Adapters
+    class MinitestAdapter < BaseAdapter
 
       def description
         example

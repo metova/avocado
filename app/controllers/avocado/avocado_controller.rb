@@ -14,7 +14,7 @@ module Avocado
     private
 
       def json
-        Avocado::Config.json_path.join('avocado.json')
+        Avocado.json_path.join('avocado.json')
       end
 
   end

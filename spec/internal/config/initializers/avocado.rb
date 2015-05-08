@@ -1,1 +1,1 @@
-Avocado::Config.url = 'http://test.com/'
+Avocado.url = 'http://localhost:3000/avocado'

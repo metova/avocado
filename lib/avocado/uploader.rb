@@ -8,48 +8,62 @@ module Avocado
       @payload = []
     end
 
-    def upload!
+    def upload
       return unless should_upload?
-      WebMock.allow_net_connect! if defined? WebMock
-      write_payload_to_json_file do |file|
-        request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
-        net_request = Net::HTTP.new(uri.host, uri.port)
-        net_request.use_ssl = (uri.scheme == 'https')
-        response = net_request.start { |http| http.request(request) }
-
-        case response
-          when Net::HTTPSuccess then
-            response
-          when Net::HTTPRedirection then
-            location = response['location']
-            raise "Avocado was redirected to '#{location}', update your initializer!"
-          else
-            raise response.value
-        end
+      file = File.open "avocado+#{SecureRandom.hex}.json", 'a+:UTF-8'
+      file.write JSON[payload]
+      allow_external_connection do
+        post! file, Avocado.upload_token
       end
     ensure
-      WebMock.disable_net_connect! if defined? WebMock
+      if file
+        file.close
+        File.delete file.path
+      end
     end
 
     private
 
-      def write_payload_to_json_file(&block)
-        file = File.open 'avocado.json', 'w+'
-        file.write JSON[payload].force_encoding('utf-8')
-        yield file
-      ensure
-        file.close
-        File.delete file.path
+      def allow_external_connection(&block)
+        if defined? WebMock
+          WebMock.allow_net_connect!
+          yield
+          WebMock.disable_net_connect!
+        else
+          yield
+        end
+      end
+
+      def post!(file, upload_token)
+        request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
+        response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl?) do |http|
+          http.request request
+        end
+
+        p response.code
+
+        case response
+        when Net::HTTPSuccess then
+          response
+        when Net::HTTPRedirection then
+          raise "Avocado does not follow redirects! Update URL to point to #{response['location']}"
+        else
+          raise response.value
+        end
       end
 
       def should_upload?
-        payload.present? && Avocado::Config.url.presence
+        payload.present? && Avocado.url.presence
+      end
+
+      def ssl?
+        uri.scheme == 'https'
       end
 
       def uri
-        @_uri ||= URI.parse Avocado::Config.url
+        @_uri ||= URI.parse Avocado.url
       rescue URI::InvalidURIError
-        raise "Avocado::Config.url is set but is not a valid URL!"
+        raise "Avocado's URL is set but is not a valid URL!"
       end
 
   end

@@ -1,21 +1,36 @@
-require 'avocado/engine'
-require 'avocado/config'
 require 'avocado/uploader'
-require 'avocado/controller'
-require 'avocado/request_store'
-require 'avocado/packages/package'
-require 'avocado/packages/minitest_package'
-require 'avocado/packages/rspec_package'
-require 'avocado/middleware'
-require 'avocado/middleware/defaults'
+require 'avocado/controller_patch'
+require 'avocado/endpoint_store'
+require 'avocado/adapters/base_adapter'
+require 'avocado/adapters/minitest_adapter'
+require 'avocado/adapters/rspec_adapter'
+require 'avocado/serializers/adapter_serializer'
+require 'avocado/serializers/request_serializer'
+require 'avocado/serializers/response_serializer'
+require 'avocado/serializers/resource_serializer'
 
 require 'yaml'
 require 'net/http/post/multipart'
 
 module Avocado
-  def self.reset!
-    Avocado::Config.reset!
-    Avocado::RequestStore.instance.reset!
-    Avocado::Uploader.instance.payload = []
+  class << self
+    attr_accessor :url, :upload_token, :headers, :document_if, :ignored_params
+
+    def configure
+      yield self
+    end
+
+    def reset!
+      self.url = 'http://localhost:3000/avocado'
+      self.upload_token = ''
+      self.headers = []
+      self.document_if = proc { true }
+      self.ignored_params = %w(controller action format)
+      Avocado::EndpointStore.instance.reset!
+      Avocado::Uploader.instance.payload = []
+    end
+
   end
 end
+
+Avocado.reset!

@@ -1,113 +1,102 @@
 describe TestsController do
   context 'when requests SHOULD be documented' do
-    around do |example|
-      Avocado.reset!
-      expect { example.run }.to change { Avocado::Uploader.instance.payload.size }.from(0).to(1)
-    end
-
-    it 'stores JSON requests in Avocado' do
+    it 'stores JSON requests in Avocado' do |example|
       get :json
+      document(example) do
+        expect(Avocado::Uploader.instance.payload.size).to eq 1
+      end
     end
   end
 
   context 'when requests should NOT be documented' do
-    around do |example|
-      Avocado.reset!
-      example.run
-      Avocado::Uploader.instance.payload.should == []
-    end
-
-    it 'does not store non-JSON requests' do
+    it 'does not store non-JSON requests' do |example|
       get :text
+      document(example) do
+        expect(Avocado::Uploader.instance.payload).to be_empty
+      end
     end
 
-    it 'does not store when document: false', document: false do
+    it 'does not store when document: false', document: false do |example|
       get :json
+      document(example) do
+        expect(Avocado::Uploader.instance.payload).to be_empty
+      end
     end
 
-    it 'does not store when document_if returns false' do
-      Avocado::Config.document_if = -> { false }
+    it 'does not store when document_if returns false' do |example|
+      Avocado.document_if = proc { false }
       get :json
+      document(example) do
+        expect(Avocado::Uploader.instance.payload).to be_empty
+      end
     end
   end
 
   describe 'File uploads' do
-    around do |example|
-      Avocado.reset!
-      example.run
-      assertion.call
-    end
-
     context 'when file is at the top level params hash' do
-      let(:assertion) do
-        -> { Avocado::Uploader.instance.payload.first[:request][:params]['file'].should == "<Multipart File Upload>" }
-      end
-
-      it 'should show when files are uploaded' do
-        get :json, file: Rack::Test::UploadedFile.new(__FILE__, 'text/plain')
+      it 'should show when files are uploaded' do |example|
+        get :json, file: Rack::Test::UploadedFile.new(File.expand_path('../../fixtures/test.jpg', __FILE__), 'text/plain')
+        document(example) do
+          expect(payload[:request][:params]['file']).to eq '<Multipart File Upload>'
+        end
       end
     end
 
     context 'when file is deeper within params hash' do
-      let(:assertion) do
-        -> { Avocado::Uploader.instance.payload.first[:request][:params]['user']['avatar'].should == "<Multipart File Upload>" }
-      end
-
-      it 'should show when files are uploaded' do
-        get :json, user: { avatar: Rack::Test::UploadedFile.new(__FILE__, 'text/plain') }
+      it 'should show when files are uploaded' do |example|
+        get :json, user: { avatar: Rack::Test::UploadedFile.new(File.expand_path('../../fixtures/test.jpg', __FILE__), 'text/plain') }
+        document(example) do
+          expect(payload[:request][:params]['user']['avatar']).to eq '<Multipart File Upload>'
+        end
       end
     end
   end
 
-  describe 'Avocado.payload' do
-    around do |example|
-      Avocado.reset!
-      example.run
-      assertion.call
-    end
+  describe 'Payload' do
 
     context 'with params' do
-      let(:assertion) do
-        -> { Avocado::Uploader.instance.payload.first[:request][:params].should == { 'parameter' => '123' } }
-      end
-
-      it 'should have sent the params' do
+      it 'should have sent the params' do |example|
         get :json, parameter: 123
+        document(example) do
+          expect(payload[:request][:params]).to eq Hash['parameter' => '123']
+        end
       end
     end
 
     context 'with headers' do
-      let(:assertion) do
-        -> { Avocado::Uploader.instance.payload.first[:request][:headers].should == { 'X-Example-Header' => 123 } }
-      end
-
-      it 'should send the header' do
+      it 'should send the header' do |example|
         @request.headers['X-Example-Header'] = 123
-        Avocado::Config.headers = ['X-Example-Header']
+        Avocado.headers = ['X-Example-Header']
         get :json, nil
+        document(example) do
+          expect(payload[:request][:headers]).to eq Hash['X-Example-Header' => 123]
+        end
       end
     end
 
     context 'ignored params' do
-      let(:assertion) do
-        -> { Avocado::Uploader.instance.payload.first[:request][:params].should == {} }
-      end
-
-      it 'should not contain ignored params that are concat' do
-        Avocado::Config.ignored_params << 'parameter'
+      it 'should not contain ignored params that are concat' do |example|
+        Avocado.ignored_params << 'parameter'
         get :json, parameter: 123
+        document(example) do
+          expect(payload[:request][:params]).to eq Hash.new
+        end
       end
     end
 
     context 'includes example description' do
-      let(:assertion) do
-        -> { Avocado::Uploader.instance.payload.first[:description].should == 'should have sent the description' }
-      end
-
-      it 'should have sent the description' do
+      it 'should have sent the description' do |example|
         get :json
+        document(example) do
+          expect(payload[:description]).to eq 'should have sent the description'
+        end
       end
     end
 
   end
+
+  def payload
+    Avocado::Uploader.instance.payload.first
+  end
+
 end
