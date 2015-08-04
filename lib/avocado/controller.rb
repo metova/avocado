@@ -6,7 +6,7 @@ module Avocado
     extend ActiveSupport::Concern
 
     included do
-      around_action :store_request_and_response_in_avocado
+      prepend_around_action :store_request_and_response_in_avocado
     end
 
     def documentable?
