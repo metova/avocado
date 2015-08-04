@@ -11,4 +11,4 @@ deploy:
     release: avocado-docs
   on:
     repo: metova/avocado
-    branch: release
+    branch: master
