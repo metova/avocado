@@ -8,7 +8,7 @@ deploy:
   api_key:
     secure: OqP4mw3CcN6enRdizAKTfnlQjn4aAJcgb9/Cel2pHFXvSQ7+aDdeAcUxbmbpALnS5cl1Qp7v5ysseUmTdOMyv4PHmGiUnLimyNIfECRP57I8l7o/z07S+KP4BcmEwrS8P/OgaWbboTEkqU+aa9caCGtVCVjeEPb6750E0YnPCpU=
   gem:
-    release: avocado-docs
+    master: avocado-docs
   on:
     repo: metova/avocado
     branch: master
