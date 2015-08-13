@@ -32,6 +32,7 @@ module Avocado
       def write_payload_to_json_file(&block)
         file = File.open 'avocado.json', 'w+:UTF-8'
         file.write JSON[payload]
+        file.rewind
         yield file
       ensure
         file.close
