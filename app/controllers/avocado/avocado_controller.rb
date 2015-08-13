@@ -2,7 +2,9 @@ module Avocado
   class AvocadoController < ActionController::Base
 
     def create
-      File.open(json, 'w+:UTF-8') { |f| f.write params[:file].read }
+      contents = params[:file].read
+      Rails.logger.info "Avocado file contents: #{contents}"
+      File.open(json, 'w+:UTF-8') { |f| f.write contents }
       head :ok
     end
 
