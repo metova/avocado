@@ -17,14 +17,10 @@ module Avocado
         net_request.use_ssl = (uri.scheme == 'https')
         response = net_request.start { |http| http.request(request) }
 
-        case response
-          when Net::HTTPSuccess then
-            response
-          when Net::HTTPRedirection then
-            location = response['location']
-            raise "Avocado was redirected to '#{location}', update your initializer!"
-          else
-            raise response.value
+        if response.is_a?(Net::HTTPRedirection)
+          raise "Avocado was redirected to '#{response['location']}', update your initializer!"
+        else
+          response
         end
       end
     ensure
