@@ -1,36 +1,23 @@
-module MinitestAvocadoPlugin
+module Avocado::Minitest
   def before_setup
     super
-    ActionController::Base.send :include, Avocado::Controller
-    ActionController::API.send  :include, Avocado::Controller if defined?(ActionController::API)
+    Avocado::ControllerPatch.apply
   end
 
   def before_teardown
     super
-    request  = Avocado::RequestStore.instance.request
-    response = Avocado::RequestStore.instance.response
 
-    if request && response
-      package = Avocado::Packages::MinitestPackage.new(name, request, response)
-      Avocado::Middleware.invoke(package) do
-        Avocado::Uploader.instance.payload << Avocado::RequestStore.instance.json
-      end
-    end
+    request  = Avocado.storage.request
+    response = Avocado.storage.response
+    adapter  = Avocado::Adapters::MinitestAdapter.new name, request, response
 
-    Avocado::RequestStore.instance.reset!
+    Avocado.uploader.payload << adapter.to_h if adapter.upload?
+    Avocado.storage.clear
   end
 end
 
-class MiniTest::Test
-  include MinitestAvocadoPlugin
-end
+Minitest::Test.send :include, Avocado::Minitest
 
-if MiniTest::Unit.respond_to? :after_run
-  MiniTest::Unit.after_run do
-    Avocado::Uploader.instance.upload!
-  end
-else
-  MiniTest.after_run do
-    Avocado::Uploader.instance.upload!
-  end
+Minitest.after_run do
+  Avocado.uploader.upload
 end

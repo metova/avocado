@@ -1,26 +1,28 @@
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
 
 require 'rubygems'
 require 'bundler/setup'
 
 require 'combustion'
+require 'timecop'
 require 'avocado/rspec'
 require 'webmock/rspec'
 
 Combustion.initialize! :all
+WebMock.disable_net_connect!
 
 require 'rspec/rails'
-require 'rspec/autorun'
 
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_base_class_for_anonymous_controllers = false
-  config.order = "random"
+  config.infer_spec_type_from_file_location!
+  config.order = :random
 
-  config.after(:suite) do
-    WebMock.stub_request(:post, /test/).to_return status: 200
+  config.after(:each) do
+    Avocado.reset!
   end
 end

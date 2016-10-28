@@ -1,30 +1,21 @@
 RSpec.configure do |config|
-
   config.before(:suite) do
-    ActionController::Base.send :include, Avocado::Controller
-    ActionController::API.send  :include, Avocado::Controller if defined?(ActionController::API)
+    Avocado::ControllerPatch.apply
   end
 
-  # Invoke all middleware with the request/response stored from the after_action in the controller
-  # The final action is to store the request JSON in the Avocado module until after(:suite) executes
   config.after(:each) do |ex|
-    _ex = defined?(example) ? example : ex
-    request  = Avocado::RequestStore.instance.request
-    response = Avocado::RequestStore.instance.response
+    # Older versions of RSpec use the global `example` object
+    spec = defined?(example) ? example : ex
 
-    if request && response
-      package = Avocado::Packages::RSpecPackage.new(_ex, request, response)
-      Avocado::Middleware.invoke(package) do
-        Avocado::Uploader.instance.payload << Avocado::RequestStore.instance.json
-      end
-    end
+    request  = Avocado.storage.request
+    response = Avocado.storage.response
+    adapter  = Avocado::Adapters::RSpecAdapter.new spec, request, response
 
-    Avocado::RequestStore.instance.reset!
+    Avocado.uploader.payload << adapter.to_h if adapter.upload?
+    Avocado.storage.clear
   end
 
-  # Upload avocado.json to the configured URL if one is given
   config.after(:suite) do
-    Avocado::Uploader.instance.upload!
+    Avocado.uploader.upload
   end
-
 end

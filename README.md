@@ -1,4 +1,4 @@
-Avocado [![Build Status](https://travis-ci.org/metova/avocado.svg?branch=master)](https://travis-ci.org/metova/avocado)
+Avocado
 =======
 
 Avocado hooks into your Rails specs and generates a JSON file containing useful information. It sends
@@ -7,19 +7,11 @@ documentation for your mobile team.
 
 By default, Avocado comes with an Angular API viewer within `Avocado::Engine`.
 
-If a URL is not configured, it will generate the JSON file locally. The file will be read by the
-Avocado::Engine whenever you visit it's mount point.
-
 ### Installation
 
-Use bundler to install Avocado by adding this line to your Gemfile:
 ```
-gem "avocado-docs", "~> 3.0.0"
-```
-
-Install the gem:
-```
-bundle install
+gem "avocado-docs"
+bundle
 ```
 
 ### RSpec
@@ -30,80 +22,64 @@ Add this line to the top of `spec/spec_helper.rb`:
 require 'avocado/rspec'
 ```
 
-Avocado will attach an `after_action` to your controllers that will store information about your requests
-if they respond with JSON.
+Avocado will not document specs that are tagged with `document: false` in the metadata.
+
+### Minitest
+
+Add this line to your `test/test_helper.rb`:
+
+```ruby
+require 'avocado/minitest'
+```
+
+### Cucumber
+
+Add this line to your `env.rb`:
+
+```ruby
+require 'avocado/cucumber'
+```
+
+Avocado will not document scenarios that are tagged with `@nodoc`.
 
 ### Configuration
 
-You can configure Avocado using the `Avocado::Config.configure` block, here are the options with defaults:
+You can configure Avocado using the `Avocado.configure` block, here are the options with defaults (further explanation below):
 
 ```ruby
-Avocado::Config.configure do |c|
-  c.url = nil
-  c.headers = []
-  c.document_if = -> { true }
-  c.json_path = Rails.root
-  c.ignored_params = ['controller', 'action']
+Avocado.configure do |config|
+  config.url = nil
+  config.headers = []
+  config.json_path = ::Rails.root
+  config.upload_id = proc { SecureRandom.uuid }
+  config.document_if = proc { |_request, _response| true }
+  config.ignored_params = %w(controller action format)
+  config.uploader = Avocado::Uploader.instance
 end
 ```
 
-`c.url` can be set to a valid URL. This is the URL that Avocado will POST the JSON file to. This is useful when you
-want to run the documentation off of a CI server for example.
+`url` must be set to a valid URL. Avocado will POST the JSON file to this endpoint. If using the default `Avocado::Engine`, set it to the mounted engine URL at `/specs`, for example: "my-server.com/avocado/specs" if you mounted the engine at "/avocado".
 
-`c.headers` is an array of headers that Avocado should document if they exist (for example `['Authorization']`)
+`headers` is an array of headers that Avocado should document if they exist (for example, you may want to document the 'Authorization' header). By default, all headers are ignored because the documentation can be very messy.
 
-`c.document_if` is a lambda (or any `call`able object) that determines whether or not Avocado will
-document a spec. You may find it useful to only run Avocado in certain environments (at Metova, we use `export AVOCADO=1` on Jenkins and then check `ENV['AVOCADO']` here).
+`json_path` is the directory will be saved. If using Capistrano, you may want to change this to `Rails.root.join('..', '..', 'shared')` so that it is saved across deployments.
 
-`c.json_path` is the directory where the JSON file should be stored. It might be nice to change this, for example
-if you are using Capistrano you could use the shared dir, setting it `Rails.root.join('..', '..', 'shared')`.
+`upload_id` is an identifier that can tie multiple JSON file uploads to a single test run. This can be useful if you have two different test suites (Cucumber and RSpec for example) or if you are running your tests in parallel. On Jenkins, you can set this to `ENV['BUILD_NUMBER']`. By default, the value is randomized so multiple uploads are effectively disabled.
 
-`c.ignored_params` is a list of params that are ignored during documentation. By default, the 'controller' and 'action' params that Rails sends with every request are ignored. You can add to this array via `<<`, or override it entirely with `=`.
+`document_if` is a proc that determines whether or not Avocado will document a spec. This can be useful if you want to set environment variables on CI servers so that only those servers are performing the JSON upload.
+
+`ignored_params` is a list of params that are ignored during documentation. By default, the 'controller', 'action', and 'format' params that Rails sends with every request are ignored. You can add to this array via `<<`, or override it entirely with `=`.
+
+`uploader` is the object that will perform the upload at the end of the test run. If you need some extremely custom behavior, you can override this if you'd like.
 
 ### Usage
 
-Avocado will automatically attach itself to all JSON requests in the test environment. If you would like
-to disable documentation for a particular spec, you can set your spec's `document` metadata to false:
+Avocado will automatically attach itself to all JSON requests in the test environment. It does this by monkeypatching `ActionController::Base` with an `around_action`. If the response is a blank 204 or JSON parseable, the details will be logged and eventually uploaded as JSON.
 
-```ruby
-it 'will not document with Avocado', document: false do
-  # ...
-end
-```
-
-Avocado comes with a default documentation viewer you can mount.
+Avocado comes with a default documentation viewer you can mount as a Rails engine:
 
 ```ruby
 mount Avocado::Engine, at: '/avocado'
 ```
 
-It will read avocado.json and show a decent looking documentation page. If your URL is configured, the engine will
-accept the JSON via POST and store it on the server's file system for use. If your URL is not configured, the avocado.json
-file will be generated anyway and will still be used on localhost.
-
-### Middleware
-
-On each JSON request, Avocado runs through a suite of middleware to generate the JSON information, check
-configuration options, etc. Avocado middleware responds to `call` and accepts three arguments: the RSpec
-example object, the controller request, and the controller response.
-
-If the middleware yields `false`, the spec is not documented. For example, here is an excerpt from the
-`DocumentMetadata` middleware:
-
-```ruby
-def call(example, *)
-  if example.metadata[:document] == false
-    yield false
-  else
-    yield
-  end
-end
-```
-
-You can add your own middleware like this:
-
-```ruby
-  Avocado::Middleware.configure do |chain|
-    chain << YourClassHere
-  end
-```
+It will read the avocado JSON and show a decent looking documentation page.

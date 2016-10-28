@@ -1,54 +1,64 @@
+require 'net/http/post/multipart'
+
 module Avocado
   class Uploader
     include Singleton
+    include Logger
 
     attr_accessor :payload
 
     def initialize
+      reset
+    end
+
+    def reset
       @payload = []
     end
 
-    def upload!
-      return unless should_upload?
-      WebMock.allow_net_connect! if defined? WebMock
-      write_payload_to_json_file do |file|
-        request = Net::HTTP::Post::Multipart.new uri.path, 'file' => UploadIO.new(file, 'text/json', 'avocado.json')
-        net_request = Net::HTTP.new(uri.host, uri.port)
-        net_request.use_ssl = (uri.scheme == 'https')
-        response = net_request.start { |http| http.request(request) }
+    def upload
+      return if payload.blank? || url.blank?
 
-        if response.is_a?(Net::HTTPRedirection)
-          raise "Avocado was redirected to '#{response['location']}', update your initializer!"
-        else
-          response
-        end
+      response = Net::HTTP.start(url.host, url.port, use_ssl: https?) do |http|
+        http.request multipart_req
       end
-    ensure
-      WebMock.disable_net_connect! if defined? WebMock
+
+      if success? response
+        logger.info "Successfully uploaded to #{url}"
+      else
+        logger.error "Failed to upload to #{url} (response code #{response.code}). Full response:"
+        logger.error response.body
+      end
+    end
+
+    def url
+      URI.parse Avocado.url.to_s if Avocado.url
+    rescue URI::InvalidURIError
+      logger.error "Could not parse the URI #{Avocado.url}--Avocado will not upload documentation!"
+      nil
     end
 
     private
-
-      def write_payload_to_json_file(&block)
-        file = File.open 'avocado.json', 'w+:UTF-8'
-        file.write JSON[payload]
-        file.rewind
-        yield file
-      ensure
-        file.close
-        File.delete file.path
+      def multipart_req
+        @_multipart_req ||= Net::HTTP::Post::Multipart.new url.path, file: uploadable_file, upload_id: upload_id
       end
 
-      def should_upload?
-        payload.present? && Avocado::Config.url.presence
+      def uploadable_file
+        @_uploadable_file ||= begin
+          file = StringIO.new JSON[payload]
+          UploadIO.new file, 'application/json'
+        end
       end
 
-      def uri
-        @_uri ||= URI.parse Avocado::Config.url
-      rescue URI::InvalidURIError
-        raise "Avocado::Config.url is set but is not a valid URL!"
+      def upload_id
+        @_upload_id ||= Avocado.upload_id.call
       end
 
+      def https?
+        url.to_s.include? 'https://'
+      end
+
+      def success?(response)
+        (200..399).cover? response.code.to_i
+      end
   end
 end
-

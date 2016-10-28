@@ -1,0 +1,51 @@
+<div class="top-bar">
+  <a href="#" id="toggle-filter"><%= image_tag 'avocado/filter-icon.png'%></a>
+
+  <select ng-model="ctrl.activeResource" ng-change="ctrl.chooseResource()">
+    <option ng-selected="true">All</option>
+    <option ng-repeat="spec in ctrl.allSpecs | unique: 'resource.name' | orderBy: 'resource.name'"/>
+      {{ spec.resource.name }}
+    </option>
+  </select>
+
+  <input type="text" ng-model="ctrl.query" placeholder="Search..." />
+
+  <div class="filters">
+    <label ng-repeat="filter in ctrl.filters">
+      <input type="checkbox" ng-model="filter.active" value="{{ filter.getName() }}" />
+      {{ filter.getName() }}
+    </label>
+  </div>
+</div>
+
+<div class="left-side">
+  <ul>
+    <li ng-repeat="spec in ctrl.getFilteredSpecs() | filter: ctrl.search" ng-click="ctrl.chooseSpec(spec)" ng-class="{ 'active': (spec == ctrl.activeSpec) }">
+      <span class="status-code">{{spec.response.statusCode}}</span>
+      <span class="url">{{spec.request.method}} {{spec.request.path}}</span>
+      <span class="description">{{spec.description}}</span>
+    </li>
+  </ul>
+</div>
+
+<div class="right-side">
+  <div ng-if="ctrl.activeSpec">
+    <span class="url">{{ctrl.activeSpec.request.method}} {{ctrl.activeSpec.request.path}}</span>
+    <desc>Request Parameters</desc>
+    <code class="request-params">
+{{ctrl.activeSpec.request.params}}
+    </code>
+    <desc>Headers</desc>
+    <code class="headers">
+{{ctrl.activeSpec.request.headers}}
+    </code>
+    <desc>Response Status</desc>
+    <code class="response-status">
+{{ctrl.activeSpec.response.statusCode}}
+    </code>
+    <desc>Response Body</desc>
+    <code class="response-body">
+{{ctrl.activeSpec.response.body}}
+    </code>
+  </div>
+</div>
