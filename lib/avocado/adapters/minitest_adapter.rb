@@ -1,15 +1,10 @@
 module Avocado
   module Adapters
     class MinitestAdapter < BaseAdapter
-
+      # In Minitest case, the spec object is just the name of the spec
       def description
-        example
+        spec
       end
-
-      def document?
-        true
-      end
-
     end
   end
 end

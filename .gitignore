@@ -1,6 +1,7 @@
 .bundle/
 log/*.log
 pkg/
+bin/
 avocado.yml
 *.gem
 Gemfile.lock

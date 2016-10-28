@@ -8,6 +8,5 @@ module Avocado
       @requests = SortedSet.new
       super
     end
-
   end
 end

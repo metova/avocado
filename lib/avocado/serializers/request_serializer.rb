@@ -1,7 +1,6 @@
 module Avocado
   module Serializers
     class RequestSerializer
-
       def initialize(request)
         @request = request
       end
@@ -16,7 +15,6 @@ module Avocado
       end
 
       private
-
         def headers
           hash = {}
           Avocado.headers.each do |name|
@@ -40,7 +38,6 @@ module Avocado
             end
           end
         end
-
     end
   end
 end

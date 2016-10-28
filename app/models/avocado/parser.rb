@@ -1,6 +1,5 @@
 module Avocado
   class Parser
-
     attr_reader :resources, :endpoints, :requests
 
     def initialize(json)
@@ -15,15 +14,14 @@ module Avocado
     end
 
     private
-
       def parse(json)
         json.each do |req|
           resource = find_or_create_resource_by_name req[:resource][:name]
           endpoint = find_or_create_endpoint_by_signature resource, req[:request]
-          request  = instantiate_request_object_from(req)
+          request  = request_object_from(req)
           request.endpoint = endpoint
 
-          if request.unique?(@requests)
+          if request.unique? @requests
             endpoint.requests << request
             resource.endpoints << endpoint
             @resources << resource
@@ -33,7 +31,7 @@ module Avocado
         end
       end
 
-      def instantiate_request_object_from(params)
+      def request_object_from(params)
         Avocado::Request.new \
           path:        params[:request][:path],
           params:      params[:request][:params],
@@ -44,13 +42,12 @@ module Avocado
       end
 
       def find_or_create_resource_by_name(name)
-         resource(name) || Avocado::Resource.new(name: name)
+        resource(name) || Avocado::Resource.new(name: name)
       end
 
       def find_or_create_endpoint_by_signature(resource, request)
         signature = "#{request[:method]} #{request[:path]}"
         resource.endpoints.find { |e| e.signature == signature } || Avocado::Endpoint.new(signature: signature)
       end
-
   end
 end

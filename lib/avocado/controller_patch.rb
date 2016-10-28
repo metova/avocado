@@ -3,23 +3,22 @@
 # type of test (controller, integration, etc)
 module Avocado
   module ControllerPatch
-    extend ActiveSupport::Concern
-
-    included do
-      around_action :_store_request
+    def self.included(base)
+      base.around_action :_avocado_store_request
     end
 
-    def _documentable?
-      (response.status == 204 && response.body.blank?) || !!JSON.parse(response.body)
-    rescue
-      false
+    def self.apply
+      ActionController::Base.send :include, Avocado::ControllerPatch
     end
 
-    def _store_request
+    def _avocado_store_request
       yield
     ensure
-      Avocado::EndpointStore.instance.store(request, response) if _documentable?
+      Avocado.storage.store(request, response) if _avocado_response.documentable?
     end
 
+    def _avocado_response
+      @__avocado_response ||= Avocado::ControllerResponse.new response
+    end
   end
 end

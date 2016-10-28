@@ -1,4 +1,4 @@
 Avocado::Engine.routes.draw do
-  root to: 'specs#index'
   resources :specs, only: [:create]
+  root to: 'specs#index'
 end

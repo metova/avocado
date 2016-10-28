@@ -1,26 +1,21 @@
 RSpec.configure do |config|
-
   config.before(:suite) do
-    ActionController::Base.send :include, Avocado::ControllerPatch
-    ActionController::API.send  :include, Avocado::ControllerPatch if defined?(ActionController::API)
+    Avocado::ControllerPatch.apply
   end
 
   config.after(:each) do |ex|
-    _example = defined?(example) ? example : ex
-    request  = Avocado::EndpointStore.instance.request
-    response = Avocado::EndpointStore.instance.response
-    adapter  = Avocado::Adapters::RSpecAdapter.new(_example, request, response)
+    # Older versions of RSpec use the global `example` object
+    spec = defined?(example) ? example : ex
 
-    if adapter.valid?
-      Avocado::Uploader.instance.payload << Avocado::Serializers::AdapterSerializer.new(adapter).to_h
-    end
+    request  = Avocado.storage.request
+    response = Avocado.storage.response
+    adapter  = Avocado::Adapters::RSpecAdapter.new spec, request, response
 
-    Avocado::EndpointStore.instance.reset!
+    Avocado.uploader.payload << adapter.to_h if adapter.upload?
+    Avocado.storage.clear
   end
 
-  # Upload avocado.json to the configured URL if one is given
   config.after(:suite) do
-    Avocado::Uploader.instance.upload
+    Avocado.uploader.upload
   end
-
 end

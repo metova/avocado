@@ -1,17 +1,13 @@
 module Avocado
   module Adapters
     class RSpecAdapter < BaseAdapter
-
       def description
-        example.description
+        spec.description
       end
 
-      def valid?
-        super do
-          example.metadata[:document] != false
-        end
+      def upload?
+        super { spec.metadata[:document] != false }
       end
-
     end
   end
 end

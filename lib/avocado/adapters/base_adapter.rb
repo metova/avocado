@@ -1,37 +1,36 @@
 module Avocado
   module Adapters
     class BaseAdapter
+      attr_accessor :spec, :request, :response
 
-      attr_accessor :example, :request, :response
-
-      def initialize(example, request, response)
-        @example = example
+      def initialize(spec, request, response)
+        @spec = spec
         @request = request
         @response = response
       end
 
-      def description
-        raise 'Implement #description'
+      def upload?(&block)
+        block ||= proc { true }
+        request && response && !ajax? && document_if? && block.call
       end
 
-      def valid?
-        _valid = request && response && document_if_proc_truthy? && !ajax?
-        if block_given?
-          _valid &&= !!yield
-        end
-        _valid
+      def to_h
+        {
+          resource: Avocado::Serializers::ResourceSerializer.new(request).to_h,
+          description: spec.description,
+          request: Avocado::Serializers::RequestSerializer.new(request).to_h,
+          response: Avocado::Serializers::ResponseSerializer.new(response).to_h
+        }
       end
 
       private
-
-        def document_if_proc_truthy?
-          Avocado.document_if.call request, response
-        end
-
         def ajax?
           request.xhr?
         end
 
+        def document_if?
+          Avocado.document_if.call request, response
+        end
     end
   end
 end
