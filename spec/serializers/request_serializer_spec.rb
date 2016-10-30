@@ -18,12 +18,12 @@ describe Avocado::Serializers::RequestSerializer do
     end
 
     it 'replaces file uploads with a string' do
-      expect(request).to receive(:params) { Hash['test' => Tempfile.new] }
+      expect(request).to receive(:params) { Hash['test' => Tempfile.new('avocado')] }
       expect(subject.to_h[:params]).to eq 'test' => '<Multipart File Upload>'
     end
 
     it 'deep replaces file uploads with a string' do
-      expect(request).to receive(:params) { Hash['test' => { 'test2' => Tempfile.new }] }
+      expect(request).to receive(:params) { Hash['test' => { 'test2' => Tempfile.new('avocado') }] }
       expect(subject.to_h[:params]).to eq 'test' => { 'test2' => '<Multipart File Upload>' }
     end
 
