@@ -5,6 +5,12 @@ RSpec.describe Avocado::Adapters::BaseAdapter do
 
   subject { described_class.new spec, request, response }
 
+  describe '#description' do
+    it 'raises an error when called directly' do
+      expect { subject.description }.to raise_error NotImplementedError
+    end
+  end
+
   describe '#upload?' do
     it 'returns true if the response should be uploaded' do
       expect(subject).to be_upload

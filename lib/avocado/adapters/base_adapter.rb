@@ -9,6 +9,10 @@ module Avocado
         @response = response
       end
 
+      def description
+        raise NotImplementedError, 'Adapter must implement #description!'
+      end
+
       def upload?(&block)
         block ||= proc { true }
         request && response && !ajax? && document_if? && block.call
@@ -16,7 +20,7 @@ module Avocado
 
       def to_h
         {
-          description: spec.description,
+          description: description,
           resource: Avocado::Serializers::ResourceSerializer.new(request).to_h,
           request: Avocado::Serializers::RequestSerializer.new(request).to_h,
           response: Avocado::Serializers::ResponseSerializer.new(response).to_h
