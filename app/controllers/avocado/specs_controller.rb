@@ -18,7 +18,7 @@ module Avocado
       end
 
       def new_json_filename
-        Avocado.json_path.join "avocado-#{Time.current.to_s(:nsec)}-#{Avocado.upload_id.call}.json"
+        Avocado.json_path.join "avocado-#{Time.current.to_s(:nsec)}-#{upload_id}.json"
       end
 
       def json_files
