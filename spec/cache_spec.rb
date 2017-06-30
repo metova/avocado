@@ -1,4 +1,4 @@
-describe Avocado::Storage, document: false do
+describe Avocado::Cache, document: false do
   subject { described_class.instance }
 
   describe '#store' do

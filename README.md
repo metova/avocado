@@ -50,11 +50,11 @@ You can configure Avocado using the `Avocado.configure` block, here are the opti
 Avocado.configure do |config|
   config.url = nil
   config.headers = []
-  config.json_path = ::Rails.root
   config.upload_id = proc { SecureRandom.uuid }
   config.document_if = proc { |_request, _response| true }
   config.ignored_params = %w(controller action format)
   config.uploader = Avocado::Uploader.instance
+  config.storage = Avocado::Storage::File.new ::Rails.root
 end
 ```
 
@@ -62,7 +62,7 @@ end
 
 `headers` is an array of headers that Avocado should document if they exist (for example, you may want to document the 'Authorization' header). By default, all headers are ignored because the documentation can be very messy.
 
-`json_path` is the directory will be saved. If using Capistrano, you may want to change this to `Rails.root.join('..', '..', 'shared')` so that it is saved across deployments.
+`storage` is the strategy used on the server to store the data. By default, the server will store the data in a file. This may have issues with multi-server setups. You can create your own strategy, or check out [avocado-redis](https://github.com/metova/avocado-redis).
 
 `upload_id` is an identifier that can tie multiple JSON file uploads to a single test run. This can be useful if you have two different test suites (Cucumber and RSpec for example) or if you are running your tests in parallel. On Jenkins, you can set this to `ENV['BUILD_NUMBER']`. By default, the value is randomized so multiple uploads are effectively disabled.
 

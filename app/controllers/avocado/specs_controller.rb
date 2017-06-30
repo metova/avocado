@@ -3,32 +3,22 @@ module Avocado
     layout 'avocado'
 
     def index
-      @data = json_files.map { |filename| File.read filename }
+      @data = storage.read
     end
 
     def create
-      File.open(new_json_filename, 'w+') { |f| f.write params[:file].read }
-      File.delete(*json_files_from_past_uploads)
+      storage.write params[:file].read, upload_id
+      storage.purge_old upload_id
       head :ok
     end
 
     private
+      def storage
+        Avocado.storage
+      end
+
       def upload_id
         params[:upload_id]
-      end
-
-      def new_json_filename
-        Avocado.json_path.join "avocado-#{Time.current.to_s(:nsec)}-#{upload_id}.json"
-      end
-
-      def json_files
-        Dir.glob Avocado.json_path.join('avocado*.json')
-      end
-
-      def json_files_from_past_uploads
-        json_files.reject do |spec|
-          spec.end_with? "-#{upload_id}.json"
-        end
       end
   end
 end

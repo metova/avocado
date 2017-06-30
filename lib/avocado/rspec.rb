@@ -7,12 +7,12 @@ RSpec.configure do |config|
     # Older versions of RSpec use the global `example` object
     spec = defined?(example) ? example : ex
 
-    request  = Avocado.storage.request
-    response = Avocado.storage.response
+    request  = Avocado.cache.request
+    response = Avocado.cache.response
     adapter  = Avocado::Adapters::RSpecAdapter.new spec, request, response
 
     Avocado.uploader.payload << adapter.to_h if adapter.upload?
-    Avocado.storage.clear
+    Avocado.cache.clear
   end
 
   config.after(:suite) do

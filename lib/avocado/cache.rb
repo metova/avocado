@@ -1,7 +1,7 @@
 # Temporarily store a JSON request/response. Ultimately RSpec will determine
 # if this request/response gets documented or not in an after(:each) block
 module Avocado
-  class Storage
+  class Cache
     include Singleton
 
     attr_accessor :request, :response

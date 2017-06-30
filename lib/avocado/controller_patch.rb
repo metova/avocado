@@ -14,7 +14,7 @@ module Avocado
     def _avocado_store_request
       yield
     ensure
-      Avocado.storage.store(request, response) if _avocado_response.documentable?
+      Avocado.cache.store(request, response) if _avocado_response.documentable?
     end
 
     def _avocado_response

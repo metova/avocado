@@ -7,12 +7,12 @@ module Avocado::Minitest
   def before_teardown
     super
 
-    request  = Avocado.storage.request
-    response = Avocado.storage.response
+    request  = Avocado.cache.request
+    response = Avocado.cache.response
     adapter  = Avocado::Adapters::MinitestAdapter.new name, request, response
 
     Avocado.uploader.payload << adapter.to_h if adapter.upload?
-    Avocado.storage.clear
+    Avocado.cache.clear
   end
 end
 

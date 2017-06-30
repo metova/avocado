@@ -20,12 +20,6 @@ RSpec.describe Avocado do
       expect(Avocado.headers).to eq []
     end
 
-    it 'resets the json path to be the Rails root' do
-      Avocado.json_path = :test
-      Avocado.reset!
-      expect(Avocado.json_path).to eq Rails.root
-    end
-
     it 'resets the upload id to be a UUID' do
       expect(SecureRandom).to receive(:uuid) { 'uuid' }
       Avocado.upload_id = -> { 123 }
