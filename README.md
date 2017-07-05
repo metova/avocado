@@ -58,7 +58,7 @@ Avocado.configure do |config|
 end
 ```
 
-`url` must be set to a valid URL. Avocado will POST the JSON file to this endpoint. If using the default `Avocado::Engine`, set it to the mounted engine URL at `/specs`, for example: "my-server.com/avocado/specs" if you mounted the engine at "/avocado".
+`url` must be set to a valid URL. Avocado will POST the JSON file to this endpoint. If using the default `Avocado::Engine`, set it to the mounted engine URL, for example: "my-server.com/avocado" if you mounted the engine at "/avocado".
 
 `headers` is an array of headers that Avocado should document if they exist (for example, you may want to document the 'Authorization' header). By default, all headers are ignored because the documentation can be very messy.
 
