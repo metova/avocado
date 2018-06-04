@@ -1,6 +1,7 @@
 module Avocado
   class SpecsController < ::ActionController::Base
     layout 'avocado'
+    skip_before_action :verify_authenticity_token, raise: false
 
     def index
       @data = storage.read
